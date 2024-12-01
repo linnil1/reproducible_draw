@@ -7,7 +7,8 @@ export const en = {
         run: 'Run',
         openSettings: 'Open Settings',
         close: 'Close',
-        copyToClipboard: 'Copy to Clipboard'
+        copyToClipboard: 'Copy to Clipboard',
+        copyShareLink: 'Copy Sharable Link'
     },
     settings: {
         select: 'Select',
@@ -23,6 +24,10 @@ export const en = {
         customOrderDescription: 'Provide details for your custom sorting order'
     },
     results: {
+        invalidTime: 'The time must be at *:00:00, *:10:00, *:20:00, *:30:00, *:40:00, or *:50:00.',
+        futureTime: 'The specified time is in the future.',
+        unavailable:
+            'The specified time is more than 7 days ago. Data for dates older than 7 days is not available in the database.',
         result: 'Result',
         step: 'Step',
         module: 'Module',
@@ -33,7 +38,8 @@ export const en = {
         errorOccurred: 'An Error Occurred',
         bugReportPrompt: 'Think this is a bug? Report it on GITHUB.',
         copySuccess: 'Copied successfully!',
-        copyFailure: 'Copy failed. Please try again.'
+        copyFailure: 'Copy failed. Please try again.',
+        listIsSmaller: 'List length is less than the number to select.'
     },
 
     data: {
@@ -476,7 +482,6 @@ This is a draw program -- but with a twist!
 
 Unlike traditional lotteries, this one is both **verifiable by anyone** and **completely unpredictable**.  
 
----
 
 ## How It Works
 
@@ -485,7 +490,6 @@ Instead of using standard secure random functions, this system relies on **publi
 To use this program, you simply choose a future date and specify the algorithms (like which hash function or random function to use).  
 Once these parameters are set, anyone can reproduce the same result based on those inputs.
 
----
 
 ### Unpredictability
 
@@ -496,7 +500,6 @@ And while someone might try to manipulate certain public data, it's impossible t
 
 For greater unpredictability, it's recommended to pick a date further in the future.
 
----
 
 ### Transparency and Fairness
 
@@ -506,7 +509,6 @@ If the public data is tampered with, such changes are usually easy to detect and
 
 Additionally, unlike some other draw systems, this method eliminates risks such as repeated attempts to get a favorable result or hidden backdoors in random seed generation. Once the data source and time are set, the result cannot be altered.
 
----
 
 ### Reproducibility
 
@@ -517,7 +519,6 @@ While pseudo-random numbers aren't truly random, most algorithms are rigorously 
 
 Our platform relies on public data, specified algorithms, and cross-language validation to ensure accuracy and reproducibility.
 
----
 
 ### Limitations
 
@@ -528,7 +529,6 @@ Though this system works well, it has some constraints:
 These are minor issues for most use cases, as draw events typically don't need frequent updates.  
 To address such scenarios, you can choose alternative algorithms on our platform to generate different results, even using the same public data.
 
----
 
 ## Conclusion
 

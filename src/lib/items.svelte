@@ -1,22 +1,19 @@
 <script lang="ts">
-    import { tick } from 'svelte'
+    import { onMount, tick, untrack } from 'svelte'
     let { datas } = $props()
-    let margin = $state(1)
     let container = $state()
+    let margin = $state(1)
     let itemWidth = $state(8)
     let textSize = $state(1)
-    let prevSize = $state(0)
+    let needResize = $state(false)
 
-    $effect(async () => {
+    const resize = async () => {
+        console.log('Resize')
+
         // Make the items responible by data size
-        if (prevSize != datas.length) {
-            prevSize = datas.length
-            margin = 1
-            itemWidth = 8
-            textSize = 1
-        } else {
-            return
-        }
+        margin = 1
+        itemWidth = 8
+        textSize = 1
 
         while (true) {
             await tick()
@@ -24,7 +21,7 @@
             // const realHeight = document.querySelector("#items").parentElement.scrollHeight
             const wantedHeight = container.parentElement.clientHeight
             const realHeight = container.parentElement.scrollHeight
-            console.log(realHeight, wantedHeight)
+            // console.log(realHeight, wantedHeight)
             if (realHeight <= wantedHeight) {
                 break
             }
@@ -42,6 +39,33 @@
             }
             break
         }
+    }
+
+    $effect(async () => {
+        if (needResize) {
+            needResize = false
+            await resize()
+        }
+    })
+
+    // consider debounce, use user event to avoid infinite tracking
+    let resizeTimeout = $state()
+    let prevSize = $state(0)
+    $effect(() => {
+        // if length changed
+        if (datas.length > 0 && prevSize !== datas.length) {
+            prevSize = datas.length
+            const resizeEvent = new Event('resize')
+            setTimeout(() => window.dispatchEvent(resizeEvent), 200)
+        }
+    })
+    onMount(() => {
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout)
+            resizeTimeout = setTimeout(() => {
+                needResize = true
+            }, 1000)
+        })
     })
 </script>
 

@@ -14,7 +14,7 @@ export class ReservoirSampling extends Sample {
 
     sample(random: Random, n: number, k: number): number[] {
         if (n < k) {
-            throw new Error('list length is less than k.')
+            throw new Error('results.listIsSmaller')
         }
         const reservoir = Array.from({ length: k }, (_, i) => i)
         this.steps = ''

@@ -7,7 +7,8 @@ export const tw = {
         run: '執行',
         openSettings: '開啟設定',
         close: '關閉',
-        copyToClipboard: '複製到剪貼簿'
+        copyToClipboard: '複製到剪貼簿',
+        copyShareLink: '複製分享連結'
     },
     settings: {
         select: '選擇',
@@ -23,17 +24,21 @@ export const tw = {
         customOrderDescription: '提供自訂排序的規則'
     },
     results: {
+        invalidTime: '時間必須是 *:00:00、*:10:00、*:20:00、*:30:00、*:40:00 或 *:50:00。',
+        futureTime: '未來的時間。',
+        unavailable: '指定的時間超過了 7 天前。資料庫中不提供超過 7 天前資料。',
         result: '結果',
         step: '步驟',
         module: '模組',
         output: '輸出',
-        implementation: '實作的模組',
+        implementation: '選擇的模組',
         internalState: '內部狀態',
         stepFourDisplay: '在步驟4中顯示',
         errorOccurred: '發生錯誤',
         bugReportPrompt: '如果您認為這是錯誤，請在 GITHUB 上提交問題。',
         copySuccess: '複製成功！',
-        copyFailure: '複製失敗'
+        copyFailure: '複製失敗',
+        listIsSmaller: '列表的長度較抽樣的數量還要小。'
     },
     data: {
         name: '資料取得模組',
@@ -253,8 +258,8 @@ print(hashlib.sha512(text.encode()).hexdigest())
 PCG-32 是 PCG 家族的一部分，由 Melissa O'Neill 開發，採用線性同餘生成器 (LCG) 並結合獨特的排列方式來改善隨機性。
 
 在此實作中，我們會從提供的種子中提取最後 128 位元：
-- 前 64 位元用作 PCG 的種子。
-- 後 64 位元用作 PCG 的增量值 (incr)。
+- 前 64 位元用作 PCG 的 Seed(種子)。
+- 後 64 位元用作 PCG 的 increment。
 
 ### 參考資料
 - 網站：[PCG, A Family of Better Random Number Generators](https://www.pcg-random.org/)
@@ -273,7 +278,6 @@ def pcg(seed, incr):
     incr = ((incr << 1) | 1) & b64
     state = (((incr + seed) * k) + incr) & b64
     print(f"{state=}, {incr=}")
-
 
     while True:
         # 生成數字 (next32)
@@ -376,15 +380,15 @@ def divisionless(generator, max):
     },
     sample: {
         name: '取樣模組',
-        title: '從列表中取樣元素',
-        description: `此模組用於處理從列表中取樣元素的操作。
-當與無偏的隨機模組搭配使用時，取樣演算法可以確保選取元素的方法是無偏誤的(Unbiased)。`
+        title: '從列表中取樣',
+        description: `此模組用於處理從列表中取樣的操作。
+當與無偏的隨機模組搭配使用時，取樣演算法可以確保選取每筆資料的方法是無偏誤的(Unbiased)。`
     },
     sample_fisher_yates_shuffle: {
         name: 'Fisher-Yates 亂數洗牌法',
         description: `## 使用 Fisher-Yates 洗牌 並選取前 K 個
 
-使用 Fisher–Yates（或 Knuth）洗牌演算法，隨機排列資料，並從洗牌後的列表中選取前 K 個元素。此方法已證明分佈是公平的。
+使用 Fisher–Yates（或 Knuth）洗牌演算法，隨機排列資料，並從洗牌後的列表中選取前 K 筆。此方法已證明分佈是公平的。
 
 詳細見 [Wikipedia](https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)。
 
@@ -407,7 +411,7 @@ print(fisher_yates_shuffle(random, [1, 2, 3, 4, 5], 3))
         description: `## Fisher-Yates 取樣法
 
 此演算法基於 Fisher-Yates 洗牌，但不對整個列表進行洗牌，只選取 \`k\`個項目。
-其結果等同於從完全洗牌的列表中選取最後的 \`k\` 個元素。
+其結果等同於從完全洗牌的列表中選取最後的 \`k\` 筆資料。
 
 此方法與 Python 的 \`random.sample\` 實作類似，詳細內容可見 [Python 原始碼](https://github.com/python/cpython/blob/main/Lib/random.py)。
 
@@ -431,7 +435,7 @@ print(fisher_yates_sample(random, [1, 2, 3, 4, 5], 3))
     },
     sample_naive: {
         name: '簡單隨機選取（可重複）',
-        description: `從陣列中隨機選取 \`k\` 個元素，允許選取重複的項目（可重複取樣）。
+        description: `從陣列中隨機選取 \`k\` 筆，允許選取重複的項目（可重複取樣）。
 
 ### Python 範例
 \`\`\`python

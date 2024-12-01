@@ -1,4 +1,4 @@
-import { addMessages, init, getLocaleFromNavigator } from 'svelte-i18n'
+import { addMessages, init, getLocaleFromQueryString } from 'svelte-i18n'
 
 import { en } from './en'
 import { tw } from './tw'
@@ -7,5 +7,5 @@ addMessages('tw', tw)
 
 init({
     fallbackLocale: 'en',
-    initialLocale: getLocaleFromNavigator()
+    initialLocale: getLocaleFromQueryString('lang')
 })

@@ -14,7 +14,7 @@ export class FisherYatesSampling extends Sample {
 
     sample(random: Random, n: number, k: number): number[] {
         if (n < k) {
-            throw new Error('list length is less than k.')
+            throw new Error('results.listIsSmaller')
         }
         const result = Array.from({ length: n }, (_, i) => i)
         const arr = []

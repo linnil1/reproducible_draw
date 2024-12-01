@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { goto } from '$app/navigation'
+    import { goto, replaceState } from '$app/navigation'
     import { page } from '$app/stores'
     import Icon from '@iconify/svelte'
     import { locale, locales, _, isLoading } from 'svelte-i18n'
@@ -11,7 +11,8 @@
 
     function changeLanguage(lang: string) {
         $locale = lang
-        console.log(lang)
+        $page.url.searchParams.set('lang', $locale)
+        replaceState($page.url, $page.state)
         languageToggler = false
     }
 </script>
@@ -48,14 +49,16 @@
         <div>
             {#if $page.url.pathname == '/'}
                 <button
-                    onclick={() => goto('/info')}
+                    onclick={() => {
+                        goto(`/info?${$page.url.searchParams}`)
+                    }}
                     class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
                 >
                     <Icon icon="material-symbols:info-outline" style="text-gray-700" />
                 </button>
             {:else}
                 <button
-                    onclick={() => goto('/')}
+                    onclick={() => goto(`/?${$page.url.searchParams}`)}
                     class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
                 >
                     <Icon icon="material-symbols:home" style="text-gray-700" />

@@ -1,3 +1,4 @@
+import { Status, type DataResult } from '$lib/status'
 import { Data } from './data'
 
 export abstract class CwaData extends Data {
@@ -8,24 +9,35 @@ export abstract class CwaData extends Data {
     abstract fieldFormatter(key: string, value: any): string
     abstract parse()
 
-    check(date: Date): string {
+    check(date: Date): DataResult {
         const now = new Date()
         const minutes = date.getMinutes()
         const seconds = date.getSeconds()
         if (seconds !== 0 || minutes % 10 !== 0) {
-            return 'Fail: The time must be at *:00:00, *:10:00, *:20:00, *:30:00, *:40:00 or *:50:00'
+            return {
+                status: Status.FAIL,
+                text: 'results.invalidTime'
+            }
         }
 
-        if (date > now) {
-            return 'Pending: The specified time is in the future.'
-        }
+        if (date > now)
+            return {
+                status: Status.PENDING,
+                text: 'results.futureTime'
+            }
 
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(now.getDate() - 7)
         if (date < sevenDaysAgo) {
-            return 'Fail: Data for dates more than 7 days old is not available in the database.'
+            return {
+                status: Status.FAIL,
+                text: 'results.unavailable'
+            }
         }
-        return 'Pass'
+        return {
+            status: Status.SUCCESS,
+            text: ''
+        }
     }
 
     toLocalISOString(date: Date): string {

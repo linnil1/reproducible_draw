@@ -1,17 +1,28 @@
 <script lang="ts">
-    import { _, locale } from 'svelte-i18n'
-    import { onMount } from 'svelte'
-    import SveltyPicker from 'svelty-picker'
     import { Carta, Markdown } from 'carta-md'
+    const carta = new Carta()
+
+    import { replaceState } from '$app/navigation'
+    import { _, locale } from 'svelte-i18n'
+    import { page } from '$app/stores'
+    import { onMount, tick } from 'svelte'
+    import SveltyPicker from 'svelty-picker'
     import { datas, hashs, generators, randoms, samples } from '$lib/algorithm'
     import type { Step } from '$lib/step'
     import ListImplement from '$lib/list_implement.svelte'
-    import Block from '$lib/block.svelte'
+    import Block from '$lib/detailBlock.svelte'
+    import BlockSub from '$lib/detailSubBlock.svelte'
     import Items from '$lib/items.svelte'
     import type { Modules } from '$lib/algorithm/modules'
     import type { Sample } from '$lib/algorithm/sample'
     import { Module } from '$lib/algorithm/module'
-    const carta = new Carta({})
+    import { Status, type DataResult } from '$lib/status'
+    import {
+        copyToClipboard,
+        dateToStr,
+        getTimeZoneOffsetStr,
+        splitByFirstSemicolon
+    } from '$lib/utils'
 
     // user selected state
     let timeZone = $state('UTC+0')
@@ -25,13 +36,14 @@
     let selectedSortOption: string = $state('alphabet')
     let selectedSortOptionText: string = $state('manual')
     let selectedItemNumber: number = $state(123)
+    let allowAdvancedConfig: boolean = $state(false)
+
+    // state
     // let itemListStr: string = $state('1\n2\n3') // next line split
     let itemListStr: string = $state(
         '2\n3\n5\n7\n11\n13\n17\n19\n23\n29\n31\n37\n41\n43\n47\n53\n59\n61\n67\n71\n73\n79\n83\n89\n97\n101\n103\n107\n109\n113\n127\n131\n137\n139\n149\n151\n157\n163\n167\n173\n179\n181\n191\n193\n197\n199\n211\n223\n227\n229\n233\n239\n241\n251\n257\n263\n269\n271\n277\n281\n283\n293\n307\n311\n313\n317\n331\n337\n347\n349\n353\n359\n367\n373\n379\n383\n389\n397\n401\n409\n419\n421\n431\n433\n439\n443\n449\n457\n461\n463\n467\n479\n487\n491\n499\n503\n509\n521\n523\n541\n547\n557\n563\n569\n571\n577\n587\n593\n599\n601\n607\n613\n617\n619\n631\n641\n643\n647\n653\n659\n661\n673\n677\n683\n691\n701\n709\n719\n727\n733\n739\n743\n751\n757\n761\n769\n773\n787\n797\n809\n811\n821\n823\n827\n829\n839\n853\n857\n859\n863\n877\n881\n883\n887\n907\n911\n919\n929\n937\n941\n947\n953\n967\n971\n977\n983\n991\n997'
     )
-    let allowAdvancedConfig: boolean = $state(false)
-
-    // state
+    let autoRun = $state(false)
     let showConfiguration: boolean = $state(false)
     let samplesWithDupOption: Modules<Sample> = $derived(
         samples.clone((i) => i.allowDuplicated() == allowDuplicated)
@@ -49,13 +61,61 @@
 
     let pipelineDetails: Step<Module>[] = $state([])
     let resultItems: number[] = $state([])
-    let resultsInfo: string = $state('null')
+    let resultsInfo: DataResult = $state({
+        status: Status.NULL,
+        text: ''
+    })
+
+    function setParam() {
+        $page.url.searchParams.set('date', selectedDate)
+        $page.url.searchParams.set('data', selectedData)
+        $page.url.searchParams.set('hash', selectedHash)
+        $page.url.searchParams.set('generator', selectedGenerator)
+        $page.url.searchParams.set('random', selectedRandom)
+        $page.url.searchParams.set('sample', selectedSample)
+        $page.url.searchParams.set('allowDuplicated', allowDuplicated.toString())
+        $page.url.searchParams.set('sortOption', selectedSortOption)
+        $page.url.searchParams.set('sortOptionText', selectedSortOptionText)
+        $page.url.searchParams.set('itemNumber', selectedItemNumber.toString())
+        $page.url.searchParams.set('itemList', items.join('\n'))
+        $page.url.searchParams.set('allowAdvancedConfig', allowAdvancedConfig.toString())
+        $page.url.searchParams.set('autoRun', 'true')
+        replaceState($page.url, $page.state)
+    }
+
+    function loadParam() {
+        const params = $page.url.searchParams
+        if (params.get('date')) selectedDate = params.get('date')
+        itemListStr = params.get('items') || '1\n2\n3'
+        selectedData = params.get('data') || datas.listName()[0]
+        selectedGenerator = params.get('generator') || generators.listName()[0]
+        selectedRandom = params.get('random') || randoms.listName()[0]
+        selectedSample = params.get('sample') || samples.listName()[0]
+        selectedSortOptionText = params.get('sortOptionText') || 'manual'
+        selectedSortOption = params.get('sortOption') || 'alphabet'
+        try {
+            selectedItemNumber = parseInt(params.get('itemNumber'), 10) || 1
+        } catch (e) {
+            selectedItemNumber = 1
+        }
+        // We watch duplicatable option, make it last one to load
+        allowDuplicated = params.get('allowDuplicated') === 'true'
+        // The last is allowAdvancedConfig
+        // It may set advanced setting to default
+        allowAdvancedConfig = params.get('allowAdvancedConfig') === 'true'
+        autoRun = params.get('autoRun') === 'true'
+    }
 
     onMount(() => {
-        // const now = new Date()
-        const now = new Date('2024-11-29T11:10:00')
-        selectedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+        const now = new Date()
+        now.setSeconds(0)
+        now.setMinutes(Math.floor(now.getMinutes() / 10) * 10)
+        selectedDate = dateToStr(now)
         timeZone = 'GMT' + getTimeZoneOffsetStr()
+        loadParam()
+        if (autoRun) {
+            submitPipeline()
+        }
     })
 
     $effect(() => {
@@ -74,30 +134,26 @@
         }
     })
 
-    function getTimeZoneOffsetStr() {
-        const date = new Date()
-        const offset = -date.getTimezoneOffset()
-        const sign = offset >= 0 ? '+' : '-'
-        const hours = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0')
-        const minutes = String(Math.abs(offset) % 60).padStart(2, '0')
-        return `${sign}${hours}${minutes}`
-    }
-
     async function submitPipeline() {
         try {
-            const date = new Date(`${selectedDate}:00${getTimeZoneOffsetStr()}`)
+            // Make sure all the var is set
+            await tick()
+            const date = new Date(`${selectedDate}${getTimeZoneOffsetStr()}`)
+            console.log(date)
             const dataModule = datas.get(selectedData)
             const hashModule = hashs.get(selectedHash)
             const generatorModule = generators.get(selectedGenerator)
             const randomModule = randoms.get(selectedRandom)
             const sampleModule = samples.get(selectedSample)
+            setParam()
+
             // console.log(selectedDate, timeZone)
             // console.log(itemListStr)
 
             // Run the pipeline
             pipelineDetails = []
             resultsInfo = dataModule.check(date)
-            if (resultsInfo !== 'Pass') {
+            if (resultsInfo.status !== Status.SUCCESS) {
                 return
             }
             const data = await dataModule.fetch(date)
@@ -151,12 +207,10 @@
             resultItems = resultList
             pipelineDetails[3].output = randomModule.getState()
         } catch (e) {
-            resultsInfo =
-                $_('results.errorOccurred') +
-                ': ' +
-                e.toString() +
-                '\n ' +
-                $_('results.bugReportPrompt')
+            resultsInfo = {
+                status: Status.FAIL,
+                text: 'results.errorOccurred;' + e.message
+            }
         }
 
         setTimeout(() => {
@@ -165,17 +219,6 @@
                 behavior: 'smooth'
             })
         }, 200)
-    }
-
-    function copyToClipboard(text: string): void {
-        navigator.clipboard
-            .writeText(text)
-            .then(() => {
-                alert($_('results.copySuccess'))
-            })
-            .catch((err) => {
-                console.error($_('results.copyFailure'), err)
-            })
     }
 </script>
 
@@ -203,7 +246,6 @@
                     會在隨機抽樣方法
                     <span class="font-bold">{$_(samples.get(selectedSample).getI18nName())}</span> 的使用下
                 {/if}
-
                 從總共
                 <span class="font-bold">{items.length}</span> 個中按照
                 <span class="font-bold">
@@ -212,7 +254,7 @@
                         : selectedSortOptionText || '未定義的自訂排序'}
                 </span>
                 的列表中挑選
-                <span class="font-bold">{allowDuplicated ? '重複' : '不重複'}</span>
+                <span class="font-bold">{allowDuplicated ? '可重複' : '不重複'}</span> 的
                 <span class="font-bold">{selectedItemNumber}</span> 個。 列表如下
             {:else}
                 <!--english-->
@@ -251,18 +293,18 @@
         <!-- Main.Submit Button -->
         <div class="flex justify-center space-x-4">
             <button
+                onclick={() => {
+                    showConfiguration = !showConfiguration
+                }}
+                class="w-5/12 rounded bg-blue-500 p-2 text-white transition hover:bg-blue-600"
+            >
+                {$_('button.openSettings')}
+            </button>
+            <button
                 onclick={submitPipeline}
                 class="w-5/12 rounded bg-blue-500 p-2 text-white transition hover:bg-blue-600"
             >
                 {$_('button.run')}
-            </button>
-            <button
-                onclick={() => {
-                    showConfiguration = !showConfiguration
-                }}
-                class="w-5/12 rounded bg-gray-500 p-2 text-white transition hover:bg-gray-600"
-            >
-                {$_('button.openSettings')}
             </button>
         </div>
     </div>
@@ -279,7 +321,7 @@
             manualInput={true}
             inputClasses="w-full bg-white border border-gray-300 rounded-lg p-1 hover:border-blue-400 focus:outline-none focus:border-blue-500"
             mode="datetime"
-            format="yyyy-mm-dd hh:ii"
+            format="yyyy-mm-dd hh:ii:ss"
             bind:value={selectedDate}
         />
         {$_('settings.timezone')}: <span>{timeZone}</span>
@@ -374,65 +416,76 @@
 {/if}
 
 <!-- Second Page -->
-{#if resultsInfo !== 'null'}
-    <div class="container mx-auto flex w-full flex-col overflow-hidden md:w-8/12">
+{#if resultsInfo.status !== Status.NULL}
+    <div class="container mx-auto mb-32 flex w-full flex-col overflow-hidden md:w-8/12">
         <div
             class=" flex max-h-screen flex-col items-center justify-start space-y-4 overflow-hidden p-2"
         >
-            <h3 class="my-4 text-2xl font-semibold text-gray-800">{$_('results.result')}</h3>
+            <h3 class="my-4 text-4xl font-semibold text-gray-800">{$_('results.result')}</h3>
             <div class="mx-2 max-h-full w-full flex-grow overflow-scroll">
                 <!-- Main.Result -->
-                {#if resultsInfo !== 'Pass'}
-                    <div>{resultsInfo}</div>
+                {#if resultsInfo.status !== Status.SUCCESS}
+                    <div class="my-8 rounded-lg border-l-4 bg-gray-100 p-4">
+                        {#if resultsInfo.status === Status.FAIL}
+                            <p class="font-semibold text-red-600">
+                                {$_(splitByFirstSemicolon(resultsInfo.text)[0])}
+                            </p>
+                            <p class="font-semibold text-red-600">
+                                {$_(splitByFirstSemicolon(resultsInfo.text)[1])}
+                            </p>
+                        {:else if resultsInfo.status === Status.PENDING}
+                            <p class="font-semibold text-yellow-600">{$_(resultsInfo.text)}</p>
+                        {:else if resultsInfo.status === Status.WARNING}
+                            <p class="font-semibold text-orange-600">{$_(resultsInfo.text)}</p>
+                        {/if}
+                    </div>
                 {/if}
                 {#if resultItems.length}
                     <Items datas={resultItems.map((i) => [i, items[i]])} />
                 {/if}
             </div>
-            {#if resultItems.length}
+            <div class="flex w-full justify-center space-x-4">
                 <button
                     class="w-5/12 rounded bg-blue-500 p-2 text-white transition hover:bg-blue-600"
-                    onclick={() => copyToClipboard(resultItems.map((i) => items[i]).join('\n'))}
+                    onclick={() => copyToClipboard($page.url.toString())}
                 >
-                    {$_('button.copyToClipboard')}
+                    {$_('button.copyShareLink')}
                 </button>
-            {/if}
+                {#if resultItems.length}
+                    <button
+                        class="w-5/12 rounded bg-blue-500 p-2 text-white transition hover:bg-blue-600"
+                        onclick={() => copyToClipboard(resultItems.map((i) => items[i]).join('\n'))}
+                    >
+                        {$_('button.copyToClipboard')}
+                    </button>
+                {/if}
+            </div>
         </div>
 
         <!-- Step by Step -->
         {#if pipelineDetails.length}
             {#each pipelineDetails as detail}
                 <Block title={detail.step}>
-                    <div class="mb-2">
-                        <p class="font-medium text-gray-600">{$_('results.module')}:</p>
-                        <div class="ml-4 border-l-4 border-gray-300 bg-gray-50 p-2">
-                            <article class="markdown-m prose">
-                                <Markdown
-                                    {carta}
-                                    value={'## ' +
-                                        $_(detail.modules.getI18nName()) +
-                                        '\n' +
-                                        $_(detail.modules.getI18nDescription())}
-                                />
-                            </article>
-                        </div>
-                    </div>
+                    <BlockSub
+                        type="modules"
+                        title={$_('results.module')}
+                        value={'## ' +
+                            $_(detail.modules.getI18nName()) +
+                            '\n' +
+                            $_(detail.modules.getI18nDescription())}
+                    />
 
-                    <div class="mb-2">
-                        <p class="font-medium text-gray-600">{$_('results.implementation')}:</p>
-                        <div class="ml-4 border-l-4 border-blue-300 bg-blue-50 p-2">
-                            <article class="markdown-m prose">
-                                <Markdown {carta} value={$_(detail.module.getI18nDescription())} />
-                            </article>
-                        </div>
-                    </div>
+                    <BlockSub
+                        type="module"
+                        title={$_('results.implementation')}
+                        value={$_(detail.module.getI18nDescription())}
+                    />
 
-                    <div>
-                        {#if detail.state}
-                            <p class="font-medium text-gray-600">{$_('results.internalState')}:</p>
+                    {#if detail.state}
+                        <BlockSub type="state" title={$_('results.internalState')}>
                             <div class="relative">
                                 <p
-                                    class="ml-4 max-h-32 overflow-scroll break-words border-l-4 border-blue-500 bg-blue-50 p-2 text-sm text-blue-700"
+                                    class="max-h-32 overflow-scroll break-words text-sm text-blue-700"
                                 >
                                     {@html detail.state.replace(/\n/g, '<br>')}
                                 </p>
@@ -443,13 +496,12 @@
                                     {$_('button.copyToClipboard')}
                                 </button>
                             </div>
-                        {/if}
+                        </BlockSub>
+                    {/if}
 
-                        <p class="font-medium text-gray-600">{$_('results.output')}:</p>
+                    <BlockSub type="output" title={$_('results.output')}>
                         <div class="relative">
-                            <p
-                                class="ml-4 max-h-32 overflow-scroll break-words border-l-4 border-blue-500 bg-blue-50 p-2 text-sm text-blue-700"
-                            >
+                            <p class="max-h-32 overflow-scroll break-words text-sm text-blue-700">
                                 {@html detail.output.replace(/\n/g, '<br>')}
                             </p>
                             <button
@@ -459,16 +511,9 @@
                                 {$_('button.copyToClipboard')}
                             </button>
                         </div>
-                    </div>
+                    </BlockSub>
                 </Block>
             {/each}
         {/if}
     </div>
 {/if}
-
-<style>
-    .markdown-m {
-        margin-top: -2rem;
-        margin-bottom: -1rem;
-    }
-</style>
