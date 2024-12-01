@@ -11,51 +11,57 @@
 
     function changeLanguage(lang: string) {
         $locale = lang
+        console.log(lang)
         languageToggler = false
     }
 </script>
 
-<div class="fixed bottom-4 right-4 z-50 flex flex-col items-end space-y-2">
-    <!-- Language Dropdown -->
-    <div class="relative">
-        <button
-            class="rounded bg-gray-800 px-4 py-2 text-white shadow-md transition hover:bg-gray-700"
-            onclick={() => (languageToggler = !languageToggler)}
-        >
-            <Icon icon="material-symbols:language" style="text-gray-700" />
-        </button>
-        {#if languageToggler}
-            <ul
-                class="absolute bottom-full right-0 mb-2 w-40 overflow-hidden rounded border border-gray-200 bg-white shadow-lg"
+{#if $isLoading}
+    Wait for loading
+{:else}
+    <!-- -->
+    <div class="fixed bottom-4 right-4 z-50 flex flex-col items-end space-y-2">
+        <!-- Language Dropdown -->
+        <div class="relative">
+            <button
+                class="rounded bg-gray-800 px-4 py-2 text-white shadow-md transition hover:bg-gray-700"
+                onclick={() => (languageToggler = !languageToggler)}
             >
-                {#each $locales as locale}
-                    <li class="px-4 py-2 hover:bg-gray-100">
-                        <button class="h-full w-full" onclick={() => changeLanguage(locale)}>
-                            {locale}
-                        </button>
-                    </li>
-                {/each}
-            </ul>
-        {/if}
-    </div>
+                <Icon icon="material-symbols:language" style="text-gray-700" />
+            </button>
+            {#if languageToggler}
+                <ul
+                    class="absolute bottom-full right-0 mb-2 w-40 overflow-hidden rounded border border-gray-200 bg-white shadow-lg"
+                >
+                    {#each $locales as locale}
+                        <li class="px-4 py-2 hover:bg-gray-100">
+                            <button class="h-full w-full" onclick={() => changeLanguage(locale)}>
+                                {$_('language.' + locale)}
+                            </button>
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
+        </div>
 
-    <!-- Redirect Button -->
-    <div>
-        {#if $page.url.pathname == '/'}
-            <button
-                onclick={() => goto('/info')}
-                class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
-            >
-                <Icon icon="material-symbols:info-outline" style="text-gray-700" />
-            </button>
-        {:else}
-            <button
-                onclick={() => goto('/')}
-                class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
-            >
-                <Icon icon="material-symbols:home" style="text-gray-700" />
-            </button>
-        {/if}
+        <!-- Redirect Button -->
+        <div>
+            {#if $page.url.pathname == '/'}
+                <button
+                    onclick={() => goto('/info')}
+                    class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
+                >
+                    <Icon icon="material-symbols:info-outline" style="text-gray-700" />
+                </button>
+            {:else}
+                <button
+                    onclick={() => goto('/')}
+                    class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
+                >
+                    <Icon icon="material-symbols:home" style="text-gray-700" />
+                </button>
+            {/if}
+        </div>
     </div>
-</div>
-{@render children()}
+    {@render children()}
+{/if}

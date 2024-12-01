@@ -4,7 +4,8 @@
 </script>
 
 <label class="m-4 block">
-    Select {$_(modules.getI18nName())}:
+    {$_('settings.select')}
+    {$_(modules.getI18nName())}:
     <select
         bind:value
         class="w-full rounded border bg-white p-1 hover:border-blue-400 focus:border-blue-500 focus:outline-none"

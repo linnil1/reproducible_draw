@@ -17,10 +17,12 @@ import { OpenBsdRejection } from './random_openbsd'
 import { Divisionless } from './random_divisionless'
 
 import type { Sample } from './sample'
-import { Knuth } from './sample_knuth'
-import { KnuthSampling } from './sample_knuth_sampling'
+import { FisherYatesShuffle } from './sample_fisher_yates_shuffle'
+import { FisherYatesSampling } from './sample_fisher_yates'
+import { ReservoirSampling } from './sample_reservoir'
 import { NaiveChoice } from './sample_naive'
 
+// Note: First one is default
 const datas = new Modules<Data>('data')
 datas.register(new Weather())
 datas.register(new Rain())
@@ -36,7 +38,8 @@ const randoms = new Modules<Random>('random')
 randoms.register(new OpenBsdRejection())
 randoms.register(new Divisionless())
 const samples = new Modules<Sample>('sample')
-samples.register(new Knuth())
-samples.register(new KnuthSampling())
+samples.register(new FisherYatesSampling())
+samples.register(new FisherYatesShuffle())
+// samples.register(new ReservoirSampling())
 samples.register(new NaiveChoice())
 export { datas, samples, generators, randoms, hashs }
