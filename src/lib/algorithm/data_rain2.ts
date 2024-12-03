@@ -1,18 +1,25 @@
+import { Status, type DataResult } from '$lib/status'
 import { CwaData } from './data_cwa'
 
-export class Rain extends CwaData {
+export class Rain2 extends CwaData {
     getName(): string {
-        return 'data_rain'
+        return 'data_rain2'
     }
     getPath(): string {
-        return '/data/rain'
+        return '/data/rain2'
     }
     getKeys(): string[] {
         return [...this.getMetaKeys(), ...this.getRainKeys()]
     }
 
+    check(date: Date): DataResult {
+        const result = super.check(date)
+        if (result.status != Status.SUCCESS) return result
+        return this.check10Min(date)
+    }
+
     fieldFormatter(key: string, value: any): string {
-        const float6Keys = ['lat', 'lon']
+        const float6Keys = ['Latitude', 'Longitude']
         const float1Keys = [
             'Now',
             'Past10min',
@@ -56,8 +63,8 @@ export class Rain extends CwaData {
             ObsTime: data.ObsTime.DateTime,
             StationId: data.StationId,
             StationName: data.StationName,
-            lat: coords[0].StationLatitude,
-            lon: coords[0].StationLongitude,
+            Latitude: coords[0].StationLatitude,
+            Longitude: coords[0].StationLongitude,
             // Rain
             Now: data.RainfallElement.Now.Precipitation,
             Past10min: data.RainfallElement.Past10Min.Precipitation,

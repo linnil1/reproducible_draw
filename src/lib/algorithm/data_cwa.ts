@@ -9,23 +9,43 @@ export abstract class CwaData extends Data {
     abstract fieldFormatter(key: string, value: any): string
     abstract parse()
 
-    check(date: Date): DataResult {
-        const now = new Date()
+    protected check10Min(date: Date): DataResult {
         const minutes = date.getMinutes()
         const seconds = date.getSeconds()
         if (seconds !== 0 || minutes % 10 !== 0) {
             return {
                 status: Status.FAIL,
-                text: 'results.fetch.invalidTime'
+                text: 'results.fetch.invalidTimePer10Min'
             }
         }
+        return {
+            status: Status.SUCCESS,
+            text: ''
+        }
+    }
 
+    protected checkHour(date: Date): DataResult {
+        const minutes = date.getMinutes()
+        const seconds = date.getSeconds()
+        if (seconds !== 0 || minutes !== 0) {
+            return {
+                status: Status.FAIL,
+                text: 'results.fetch.invalidTimePerHour'
+            }
+        }
+        return {
+            status: Status.SUCCESS,
+            text: ''
+        }
+    }
+
+    check(date: Date): DataResult {
+        const now = new Date()
         if (date > now)
             return {
                 status: Status.PENDING,
                 text: 'results.fetch.futureTime'
             }
-
         const sevenDaysAgo = new Date()
         sevenDaysAgo.setDate(now.getDate() - 7)
         if (date < sevenDaysAgo) {
@@ -40,7 +60,7 @@ export abstract class CwaData extends Data {
         }
     }
 
-    toLocalISOString(date: Date): string {
+    private toDbKey(date: Date): string {
         // Get the date and time components
         const year = date.getFullYear()
         const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -58,7 +78,7 @@ export abstract class CwaData extends Data {
     }
 
     getMetaKeys(): string[] {
-        return ['ObsTime', 'StationId', 'StationName', 'lat', 'lon']
+        return ['ObsTime', 'StationId', 'StationName', 'Latitude', 'Longitude']
     }
 
     getState(): string {
@@ -96,8 +116,11 @@ export abstract class CwaData extends Data {
     }
 
     async fetch(date: Date): Promise<string> {
-        const dateStr = this.toLocalISOString(date)
-        const response = await fetch(`${this.getPath()}?datetime=${dateStr}`)
+        const params = new URLSearchParams({
+            datetime: this.toDbKey(date)
+        })
+        console.log(params.toString())
+        const response = await fetch(`${this.getPath()}?${params.toString()}`)
         if (!response.ok) {
             throw new Error('results.fetch.unexpectedError')
         }

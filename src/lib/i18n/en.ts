@@ -29,7 +29,8 @@ export const en = {
             keyNotFound:
                 'Failed to fetch data because it is not in the database. This might be due to querying future data.',
             dataChanged: 'The data is inconsistent with the same key.',
-            invalidTime:
+            invalidTimePerHour: 'The time must be at *:00:00 (available per hour).',
+            invalidTimePer10Min:
                 'The time must be at *:00:00, *:10:00, *:20:00, *:30:00, *:40:00, or *:50:00.',
             futureTime: 'The specified time is in the future.',
             unavailable:
@@ -68,6 +69,8 @@ Weather data is sourced using the following API:
 
 You can explore the APIs directly on the CWA Open Data Platform: [Central Weather Administration Open Data API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html).
 
+The weather data is only available per 10 minutes.
+
 #### 2. Stations:
 The module retrieves data from all available manned stations. The station list may change depending on the API but we will include all current stations.  
 
@@ -78,24 +81,31 @@ Each station entry includes the following fields:
 
 \`\`\`json
 {
-    "ObsTime": "2024-11-14T15:52:00.000Z",
+    "ObsTime": "2024-12-03T13:30:00+08:00",
     "StationId": "12J990",
     "StationName": "口湖工作站",
-    "lat": 23.589977,
-    "lon": 120.180400,
-    "Weather": "陰",
-    "Precipitation": 0.0,
-    "WindDirection": 20.0,
-    "WindSpeed": 4.0,
-    "AirTemperature": 24.0,
-    "RelativeHumidity": 82.0,
-    "AirPressure": -99,
-    "GustInfo": 8.9,
-    "DailyHigh": 27.7,
-    "DailyLow": 22.1,
+    "Latitude": 23.589977,
+    "Longitude": 120.180400,
+    "Weather": "晴",
     "VisibilityDescription": "-99",
-    "SunshineDuration": -99,
-    "UVIndex": -99
+    "SunshineDuration": -99.0,
+    "Precipitation": 0.0,
+    "WindDirection": 320.0,
+    "WindSpeed": 2.2,
+    "AirTemperature": 24.6,
+    "RelativeHumidity": 63.0,
+    "AirPressure": -99.0,
+    "UVIndex": -99.0,
+    "Max10MinAverage.Occurred_at": "-99",
+    "Max10MinAverage.WindDirection": -99.0,
+    "Max10MinAverage.WindSpeed": -99.0,
+    "GustInfo.Occurred_at": "-99",
+    "GustInfo.WindDirection": -99.0,
+    "GustInfo.PeakGustSpeed": -99.0,
+    "DailyHigh.AirTemperature": 24.6,
+    "DailyHigh.Occurred_at": "2024-12-03T13:26:00+08:00",
+    "DailyLow.AirTemperature": 17.4,
+    "DailyLow.Occurred_at": "2024-12-03T06:40:00+08:00"
 }
 \`\`\`
 
@@ -124,6 +134,8 @@ Weather data is sourced using the following API:
 
 You can explore the APIs directly on the CWA Open Data Platform: [Central Weather Administration Open Data API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html).
 
+The weather data is only available per hour.
+
 #### 2. Stations:
 The number of stations may vary depending on the API, but all available automated stations will be included.  
 
@@ -134,21 +146,25 @@ Each station entry includes the following fields:
 
 \`\`\`json
 {
-    "ObsTime": "2024-11-14T15:52:00.000Z",
-    "StationId": "12J990",
-    "StationName": "口湖工作站",
-    "lat": 23.589977,
-    "lon": 120.180400,
-    "Weather": "陰",
-    "Precipitation": 0.0,
-    "WindDirection": 20.0,
-    "WindSpeed": 4.0,
-    "AirTemperature": 24.0,
-    "RelativeHumidity": 82.0,
-    "AirPressure": -99,
-    "GustInfo": 8.9,
-    "DailyHigh": 27.7,
-    "DailyLow": 22.1
+    "ObsTime": "2024-12-03T19:00:00+08:00",
+    "StationId": "C0A520",
+    "StationName": "山佳",
+    "Latitude": 23.589977,
+    "Longitude": 120.180400,
+    "Weather": "晴",
+    "Precipitation": -99.0,
+    "WindDirection": 59.0,
+    "WindSpeed": 3.9,
+    "AirTemperature": 20.8,
+    "RelativeHumidity": 75.0,
+    "AirPressure": 1011.9,
+    "GustInfo.Occurred_at": "-99",
+    "GustInfo.WindDirection": -99.0,
+    "GustInfo.PeakGustSpeed": -99.0,
+    "DailyHigh.AirTemperature": 25.6,
+    "DailyHigh.Occurred_at": "2024-12-03T11:00:00+08:00",
+    "DailyLow.AirTemperature": 20.8,
+    "DailyLow.Occurred_at": "2024-12-03T19:00:00+08:00"
 }
 \`\`\`
 
@@ -161,7 +177,7 @@ If a field is missing in the API response, it will be replaced with \`null\` to 
 The final JSON output is compact, without spaces or newlines
 `
     },
-    data_rain: {
+    data_rain2: {
         name: 'Taiwan Rainfall',
         description: `## Taiwan Rain Data (Automated Rainfall Station Data, O-A0002-001)
 
@@ -177,6 +193,8 @@ Rainfall data is sourced using the following API:
 
 You can explore the APIs directly on the CWA Open Data Platform: [Central Weather Administration Open Data API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html).
 
+The rain data is only available per 10 minutes.
+
 #### 2. Stations:
 The number of stations may vary based on the API but will include all currently available automated rainfall stations.  
 
@@ -190,8 +208,8 @@ Each station entry includes the following fields:
     "ObsTime": "2024-11-14T15:52:00.000Z",
     "StationId": "12J990",
     "StationName": "口湖工作站",
-    "lat": 23.589977,
-    "lon": 120.1804,
+    "Latitude": 23.589977,
+    "Longitude": 120.180400,
     "Now": 0.0,
     "Past10min": 0.0,
     "Past1hr": 0.0,
@@ -339,7 +357,7 @@ print(r.extract_number())
     },
     random_openbsd: {
         name: 'OpenBSD',
-        description: `## OpenBSD Unbiased Modulo Method (Implemented in c)
+        description: `## OpenBSD Rejection Sampling Method
 
 This method removes modulo bias by using a rejection sampling technique, which ensures a fair distribution of values within a specified interval.
 

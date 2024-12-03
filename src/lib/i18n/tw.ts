@@ -28,7 +28,9 @@ export const tw = {
             unexpectedError: '跟server拿取資料時發生意外錯誤。',
             keyNotFound: '無法取得天氣資料，因為資料庫中不存在。可能是查詢了未來的資料。',
             dataChanged: '相同時間的資料卻不一致。',
-            invalidTime: '時間必須是 *:00:00、*:10:00、*:20:00、*:30:00、*:40:00 或 *:50:00。',
+            invalidTimePer10Min:
+                '時間必須是 *:00:00、*:10:00、*:20:00、*:30:00、*:40:00 或 *:50:00。',
+            invalidTimePerHour: '時間必須是 *:00:00（整點）。',
             futureTime: '使用未來的時間。時間尚未到來，請耐心等待',
             unavailable: '指定的時間超過了 7 天前。資料庫中不提供超過 7 天前資料。'
         },
@@ -48,7 +50,7 @@ export const tw = {
     data: {
         name: '資料取得模組',
         title: '資料取得',
-        description: `此模組旨在於特定時間點從官方來源獲取可靠的公共資料`
+        description: `此模組旨在於特定時間點從官方來源獲取可靠的公開資料`
     },
     data_weather3: {
         name: '台灣天氣（有人氣象站）',
@@ -65,6 +67,8 @@ export const tw = {
 
 API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html)。
 
+該資料每 10 分鐘更新一次
+
 #### 2. 測站:
 測站數量可能根據 API 有所不同，所有可用的有人氣象站的資料都會納入。  
 
@@ -75,24 +79,31 @@ API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov
 
 \`\`\`json
 {
-    "ObsTime": "2024-11-14T15:52:00.000Z",
+    "ObsTime": "2024-12-03T13:30:00+08:00",
     "StationId": "12J990",
     "StationName": "口湖工作站",
-    "lat": 23.589977,
-    "lon": 120.180400,
-    "Weather": "陰",
-    "Precipitation": 0.0,
-    "WindDirection": 20.0,
-    "WindSpeed": 4.0,
-    "AirTemperature": 24.0,
-    "RelativeHumidity": 82.0,
-    "AirPressure": -99,
-    "GustInfo": 8.9,
-    "DailyHigh": 27.7,
-    "DailyLow": 22.1,
+    "Latitude": 23.589977,
+    "Longitude": 120.180400,
+    "Weather": "晴",
     "VisibilityDescription": "-99",
-    "SunshineDuration": -99,
-    "UVIndex": -99
+    "SunshineDuration": -99.0,
+    "Precipitation": 0.0,
+    "WindDirection": 320.0,
+    "WindSpeed": 2.2,
+    "AirTemperature": 24.6,
+    "RelativeHumidity": 63.0,
+    "AirPressure": -99.0,
+    "UVIndex": -99.0,
+    "Max10MinAverage.Occurred_at": "-99",
+    "Max10MinAverage.WindDirection": -99.0,
+    "Max10MinAverage.WindSpeed": -99.0,
+    "GustInfo.Occurred_at": "-99",
+    "GustInfo.WindDirection": -99.0,
+    "GustInfo.PeakGustSpeed": -99.0,
+    "DailyHigh.AirTemperature": 24.6,
+    "DailyHigh.Occurred_at": "2024-12-03T13:26:00+08:00",
+    "DailyLow.AirTemperature": 17.4,
+    "DailyLow.Occurred_at": "2024-12-03T06:40:00+08:00"
 }
 \`\`\`
 
@@ -120,6 +131,8 @@ API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov
 
 API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html)。
 
+該資料每 1 小時更新一次
+
 #### 2. 測站:
 測站數量可能根據 API 有所不同，所有可用的自動氣象站的資料都會納入。  
 
@@ -130,21 +143,25 @@ API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov
 
 \`\`\`json
 {
-    "ObsTime": "2024-11-14T15:52:00.000Z",
-    "StationId": "12J990",
-    "StationName": "口湖工作站",
-    "lat": 23.589977,
-    "lon": 120.180400,
-    "Weather": "陰",
-    "Precipitation": 0.0,
-    "WindDirection": 20.0,
-    "WindSpeed": 4.0,
-    "AirTemperature": 24.0,
-    "RelativeHumidity": 82.0,
-    "AirPressure": -99,
-    "GustInfo": 8.9,
-    "DailyHigh": 27.7,
-    "DailyLow": 22.1
+    "ObsTime": "2024-12-03T19:00:00+08:00",
+    "StationId": "C0A520",
+    "StationName": "山佳",
+    "Latitude": 23.589977,
+    "Longitude": 120.180400,
+    "Weather": "晴",
+    "Precipitation": -99.0,
+    "WindDirection": 59.0,
+    "WindSpeed": 3.9,
+    "AirTemperature": 20.8,
+    "RelativeHumidity": 75.0,
+    "AirPressure": 1011.9,
+    "GustInfo.Occurred_at": "-99",
+    "GustInfo.WindDirection": -99.0,
+    "GustInfo.PeakGustSpeed": -99.0,
+    "DailyHigh.AirTemperature": 25.6,
+    "DailyHigh.Occurred_at": "2024-12-03T11:00:00+08:00",
+    "DailyLow.AirTemperature": 20.8,
+    "DailyLow.Occurred_at": "2024-12-03T19:00:00+08:00"
 }
 \`\`\`
 
@@ -157,7 +174,7 @@ API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov
 最終輸出的 JSON 為緊湊格式，無空格和換行
 `
     },
-    data_rain: {
+    data_rain2: {
         name: '台灣降雨量',
         description: `## 台灣降雨資料（自動雨量站資料，O-A0002-001）
 
@@ -172,6 +189,8 @@ API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov
 
 API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html)。
 
+該資料每 10 分鐘更新一次
+
 #### 2. 測站:
 測站數量可能根據 API 有所不同，所有可用的自動雨量站的資料都會納入。  
 
@@ -185,8 +204,8 @@ API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov
     "ObsTime": "2024-11-14T15:52:00.000Z",
     "StationId": "12J990",
     "StationName": "口湖工作站",
-    "lat": 23.589977,
-    "lon": 120.1804,
+    "Latitude": 23.589977,
+    "Longitude": 120.180400,
     "Now": 0.0,
     "Past10min": 0.0,
     "Past1hr": 0.0,
@@ -333,7 +352,7 @@ print(r.extract_number())
     },
     random_openbsd: {
         name: 'OpenBSD',
-        description: `## OpenBSD的無偏差(Unbiased)同餘(Modulo) (實作在 c)
+        description: `## OpenBSD的拒絕採樣法 (rejection sampling)
 
 此方法通過使用拒絕採樣 (rejection sampling) 消除同餘運算中的偏差，確保在指定區間內的值都有相同的機率
 

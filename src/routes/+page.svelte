@@ -124,7 +124,6 @@
 
     $effect(() => {
         if (allowAdvancedConfig == false) {
-            selectedData = datas.listName()[0]
             selectedHash = hashs.listName()[0]
             selectedRandom = randoms.listName()[0]
             selectedGenerator = generators.listName()[0]

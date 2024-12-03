@@ -2,7 +2,8 @@ import { Modules } from './modules'
 
 import type { Data } from './data'
 import { Weather3 } from './data_weather3'
-import { Rain } from './data_rain'
+import { Rain2 } from './data_rain2'
+import { Weather1 } from './data_weather1'
 
 import type { Hash } from './hash'
 import { SHA256 } from './hash_sha256'
@@ -25,7 +26,8 @@ import { NaiveChoice } from './sample_naive'
 // Note: First one is default
 const datas = new Modules<Data>('data')
 datas.register(new Weather3())
-datas.register(new Rain())
+datas.register(new Rain2())
+datas.register(new Weather1())
 
 const hashs = new Modules<Hash>('hash')
 hashs.register(new SHA256())

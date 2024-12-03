@@ -1,12 +1,12 @@
 import { Status, type DataResult } from '$lib/status'
 import { CwaData } from './data_cwa'
 
-export class Weather3 extends CwaData {
+export class Weather1 extends CwaData {
     getName(): string {
-        return 'data_weather3'
+        return 'data_weather1'
     }
     getPath(): string {
-        return '/data/weather3'
+        return '/data/weather1'
     }
     getKeys(): string[] {
         return [...this.getMetaKeys(), ...this.getWeatherKeys()]
@@ -15,24 +15,18 @@ export class Weather3 extends CwaData {
     check(date: Date): DataResult {
         const result = super.check(date)
         if (result.status != Status.SUCCESS) return result
-        return this.check10Min(date)
+        return this.checkHour(date)
     }
 
     private getWeatherKeys(): string[] {
         return [
             'Weather',
-            'VisibilityDescription',
-            'SunshineDuration',
             'Precipitation',
             'WindDirection',
             'WindSpeed',
             'AirTemperature',
             'RelativeHumidity',
             'AirPressure',
-            'UVIndex',
-            'Max10MinAverage.Occurred_at',
-            'Max10MinAverage.WindDirection',
-            'Max10MinAverage.WindSpeed',
             'GustInfo.Occurred_at',
             'GustInfo.WindDirection',
             'GustInfo.PeakGustSpeed',
@@ -53,9 +47,6 @@ export class Weather3 extends CwaData {
             'AirTemperature',
             'RelativeHumidity',
             'AirPressure',
-            'UVIndex',
-            'Max10MinAverage.WindDirection',
-            'Max10MinAverage.WindSpeed',
             'GustInfo.WindDirection',
             'GustInfo.PeakGustSpeed',
             'DailyHigh.AirTemperature',
@@ -84,18 +75,12 @@ export class Weather3 extends CwaData {
             Longitude: coords[0].StationLongitude,
             // Weather
             Weather: element.Weather,
-            VisibilityDescription: element.VisibilityDescription,
-            SunshineDuration: element.SunshineDuration,
             Precipitation: element.Now.Precipitation,
             WindDirection: element.WindDirection,
             WindSpeed: element.WindSpeed,
             AirTemperature: element.AirTemperature,
             RelativeHumidity: element.RelativeHumidity,
             AirPressure: element.AirPressure,
-            UVIndex: element.UVIndex,
-            'Max10MinAverage.Occurred_at': element.Max10MinAverage.Occurred_at.DateTime,
-            'Max10MinAverage.WindDirection': element.Max10MinAverage.Occurred_at.WindDirection,
-            'Max10MinAverage.WindSpeed': element.Max10MinAverage.WindSpeed,
             'GustInfo.Occurred_at': element.GustInfo.Occurred_at.DateTime,
             'GustInfo.WindDirection': element.GustInfo.Occurred_at.WindDirection,
             'GustInfo.PeakGustSpeed': element.GustInfo.PeakGustSpeed,
