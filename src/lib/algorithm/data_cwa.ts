@@ -99,7 +99,7 @@ export abstract class CwaData extends Data {
         try {
             return parseFloat(value).toFixed(precision)
         } catch (e) {
-            console.log(e)
+            console.log('Fail to turn JSON into string: ' + e)
         }
         return '"' + value.toString() + '"'
     }
@@ -119,7 +119,6 @@ export abstract class CwaData extends Data {
         const params = new URLSearchParams({
             datetime: this.toDbKey(date)
         })
-        console.log(params.toString())
         const response = await fetch(`${this.getPath()}?${params.toString()}`)
         if (!response.ok) {
             throw new Error('results.fetch.unexpectedError')

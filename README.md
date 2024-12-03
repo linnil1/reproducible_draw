@@ -10,6 +10,7 @@ npx wrangler kv key put --binding data_draw weather3 --path example_weather3.jso
 npx wrangler kv key put --binding data_draw rain     --path example_rain.json     --local
 # Add these in your .dev.vars
 # CWA_KEY = "xxx"
+npx wrangler secret put CWA_KEY
 ```
 
 ## Developing
@@ -21,5 +22,13 @@ yarn run dev
 ## Building
 
 ```bash
-yarn run build
+yarn deploy
+```
+
+or (Svelte did not support cron trigger)
+
+```bash
+yarn build
+cat src/lib/server/cron.js >> .cloudflare/worker.js
+npx wrangler deploy
 ```

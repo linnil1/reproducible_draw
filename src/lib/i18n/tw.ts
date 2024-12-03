@@ -3,6 +3,9 @@ export const tw = {
         en: 'English',
         tw: '正體中文'
     },
+    title: '可重現抽獎',
+    description:
+        '一個保證公平、透明且無法預測的抽獎系統。使用公開資料和演算法生成結果，任何人都可以驗證',
     button: {
         run: '執行',
         openSettings: '開啟設定',
@@ -269,10 +272,10 @@ print(hashlib.sha512(text.encode()).hexdigest())
 \`\`\``
     },
     generator: {
-        name: '偽隨機數生成器 (PRNG) 模組',
-        title: '初始化隨機生成器',
-        description: `此模組提供生成隨機數序列的工具。
-生成的數字是確定性的，也就是說，相同的輸入種子將始終產生相同的數列。
+        name: '偽亂數產生器 (PRNG) 模組',
+        title: '初始化亂數產生器',
+        description: `此模組提供生成亂數序列的工具。
+偽亂數所生成的數字是有確定性的(deterministic)，也就是說，相同的輸入種子將始終產生相同的數列。
 `
     },
     generator_pcg: {

@@ -9,6 +9,7 @@
 </script>
 
 <div class="container mx-auto md:w-8/12">
+    <img class="m-8 w-64 rounded-2xl" src="/favicon.jpg" alt="icon" />
     <article class="prose m-4">
         {#key $locale}
             <Markdown {carta} value={$_('intro')} />

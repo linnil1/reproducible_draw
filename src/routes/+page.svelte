@@ -459,6 +459,7 @@
 
         <!-- Step by Step -->
         {#if pipelineDetails.length}
+            <div class="h-16"></div>
             {#each pipelineDetails as detail}
                 <Block title={detail.step}>
                     <BlockSub

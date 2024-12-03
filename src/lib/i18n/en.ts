@@ -3,6 +3,9 @@ export const en = {
         en: 'English',
         tw: '正體中文'
     },
+    title: 'Reproducible Draw',
+    description:
+        'A draw system that ensures fairness, transparency, and unpredictability. Using public data and algorithms to generate results that anyone can verify.',
     button: {
         run: 'Run',
         openSettings: 'Open Settings',

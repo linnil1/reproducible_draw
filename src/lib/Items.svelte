@@ -8,8 +8,7 @@
     let needResize = $state(false)
 
     const resize = async () => {
-        console.log('Resize')
-
+        // console.log('Resize')
         // Make the items responible by data size
         margin = 1
         itemWidth = 8
@@ -69,34 +68,30 @@
     })
 </script>
 
-<div
-    bind:this={container}
-    class="flex flex-wrap"
-    style="
-            row-gap: {margin * 0.8}rem;
-        "
->
-    {#each datas as data}
-        <div
-            class="relative flex-shrink-0 overflow-hidden border bg-white"
-            style="
+<div class="min-h-64">
+    <div bind:this={container} class="flex flex-wrap" style="row-gap: {margin * 0.8}rem;">
+        {#each datas as data}
+            <div
+                class="relative flex-shrink-0 overflow-hidden border bg-white"
+                style="
                     width: {itemWidth}rem;
                     font-size: {textSize}rem;
                     margin-left: {margin}rem;
                     margin-right: {margin}rem;
                     padding: {textSize * 0.4}rem;
                 "
-        >
-            {data[1]}
-            <span
-                class="absolute bottom-1 right-1 text-gray-500"
-                style="
+            >
+                {data[1]}
+                <span
+                    class="absolute bottom-1 right-1 text-gray-500"
+                    style="
                         font-size: {textSize * 0.8}rem;
                         user-select: none;
                     "
-            >
-                #{data[0] + 1}
-            </span>
-        </div>
-    {/each}
+                >
+                    #{data[0] + 1}
+                </span>
+            </div>
+        {/each}
+    </div>
 </div>
