@@ -66,5 +66,7 @@
             {/if}
         </div>
     </div>
-    {@render children()}
+    <div style={'font-family: ' + ($locale == 'tw' ? '"Noto Sans TC"' : 'inherit')}>
+        {@render children()}
+    </div>
 {/if}

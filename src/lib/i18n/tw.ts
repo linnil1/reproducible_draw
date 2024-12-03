@@ -24,9 +24,14 @@ export const tw = {
         customOrderDescription: '提供自訂排序的規則'
     },
     results: {
-        invalidTime: '時間必須是 *:00:00、*:10:00、*:20:00、*:30:00、*:40:00 或 *:50:00。',
-        futureTime: '未來的時間。',
-        unavailable: '指定的時間超過了 7 天前。資料庫中不提供超過 7 天前資料。',
+        fetch: {
+            unexpectedError: '跟server拿取資料時發生意外錯誤。',
+            keyNotFound: '無法取得天氣資料，因為資料庫中不存在。可能是查詢了未來的資料。',
+            dataChanged: '相同時間的資料卻不一致。',
+            invalidTime: '時間必須是 *:00:00、*:10:00、*:20:00、*:30:00、*:40:00 或 *:50:00。',
+            futureTime: '使用未來的時間。時間尚未到來，請耐心等待',
+            unavailable: '指定的時間超過了 7 天前。資料庫中不提供超過 7 天前資料。'
+        },
         result: '結果',
         step: '步驟',
         module: '模組',
@@ -45,7 +50,7 @@ export const tw = {
         title: '資料取得',
         description: `此模組旨在於特定時間點從官方來源獲取可靠的公共資料`
     },
-    data_weather: {
+    data_weather3: {
         name: '台灣天氣（有人氣象站）',
         description: `## 台灣天氣資料（有人氣象站資料，O-A0003-001）
 
@@ -522,5 +527,61 @@ print(naive_selection_with_replacement(random, [1, 2, 3, 4, 5], 3))
 只需選擇未來時間和演算法並公開，  
 每個人都能根據這些參數重現完全相同的結果，  
 實現公平、公正、公開。
+`,
+    info: `
+## 資訊
+
+### Github
+https://github.com/linnil1/reproducible_draw
+
+### 作者
+[linnil1](https://linnil1.tw)
+
+### 聯繫我們
+請在 Github 提出 Issue
+
+如果您不熟悉 Github，可以透過 [Google 表單](https://docs.google.com/forms/d/e/1FAIpQLSepk3nqxEQ8QHw-FkF-uXVJm9aQOEk7Dl6Cp79WIhUsJTHTPQ/viewform?usp=sf_link)回報
+`,
+    privacy: `
+## 隱私政策
+
+### 1. 資訊收集
+
+我們不會在本網站上收集個人資訊。但我們可能收集基本的分析數據（例如，網站訪問量）以改進我們的網站。
+
+### 2. Cookie
+
+我們的網站不使用 Cookie。
+
+### 3. 第三方服務
+
+我們的網站不依賴任何第三方服務。
+
+### 4. 更新
+
+我們可能會隨時更新這些政策。更新將發布在此頁面上。
+`,
+    tos: `
+## 服務條款
+
+### 1. 使用規範
+
+您可以僅將本網站用於資訊用途。您同意不濫用本網站/API 或其內容。不建議以程式化方式抓取我們的 API 資料，我們建議您直接使用相關數據來源提供的原始 API。
+
+### 2. 免責聲明
+
+本網站按“現狀”提供，並不提供任何形式的保證。我們不保證網站資訊的準確性或完整性。
+
+### 3. 資料來源
+
+本網站的數據來自官方 API，包括但不限於：
+
+- [臺灣中央氣象署開放資料 API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html)
+
+未來，我們可能會整合其他資料來源，以增強網站功能並提供更全面的數據。
+
+### 4. 更新
+
+我們可能會隨時更新這些服務條款。更新將發布在此頁面上。
 `
 }

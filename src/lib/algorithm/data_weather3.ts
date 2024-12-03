@@ -1,11 +1,11 @@
 import { CwaData } from './data_cwa'
 
-export class Weather extends CwaData {
+export class Weather3 extends CwaData {
     getName(): string {
-        return 'data_weather'
+        return 'data_weather3'
     }
     getPath(): string {
-        return '/data/weather'
+        return '/data/weather3'
     }
     getKeys(): string[] {
         return [...this.getMetaKeys(), ...this.getWeatherKeys()]

@@ -6,9 +6,9 @@
 
     let bgColor = $derived.by(() => {
         if (type === 'modules') return 'bg-blue-50 '
-        else if (type === 'module') return 'bg-green-100 '
+        else if (type === 'module') return 'bg-green-50 '
         else if (type === 'state') return 'bg-gray-100'
-        else if (type === 'output') return 'bg-yellow-100'
+        else if (type === 'output') return 'bg-yellow-50'
         else return 'bg-gray-50 '
     })
     let borderColor = $derived.by(() => {

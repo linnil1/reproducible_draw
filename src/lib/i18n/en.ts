@@ -24,10 +24,17 @@ export const en = {
         customOrderDescription: 'Provide details for your custom sorting order'
     },
     results: {
-        invalidTime: 'The time must be at *:00:00, *:10:00, *:20:00, *:30:00, *:40:00, or *:50:00.',
-        futureTime: 'The specified time is in the future.',
-        unavailable:
-            'The specified time is more than 7 days ago. Data for dates older than 7 days is not available in the database.',
+        fetch: {
+            unexpectedError: 'An unexpected error occurred while fetching data.',
+            keyNotFound:
+                'Failed to fetch data because it is not in the database. This might be due to querying future data.',
+            dataChanged: 'The data is inconsistent with the same key.',
+            invalidTime:
+                'The time must be at *:00:00, *:10:00, *:20:00, *:30:00, *:40:00, or *:50:00.',
+            futureTime: 'The specified time is in the future.',
+            unavailable:
+                'The specified time is more than 7 days ago. Data for dates older than 7 days is not available in the database.'
+        },
         result: 'Result',
         step: 'Step',
         module: 'Module',
@@ -41,13 +48,12 @@ export const en = {
         copyFailure: 'Copy failed. Please try again.',
         listIsSmaller: 'List length is less than the number to select.'
     },
-
     data: {
         name: 'Data Retrieval Module',
         title: 'Retrieve Data',
         description: `This module is designed to fetch reliable public data from official sources at specified points in time`
     },
-    data_weather: {
+    data_weather3: {
         name: 'Taiwan Weather (Manned Station)',
         description: `## Taiwan Weather Data (Manned Weather Station Data, O-A0003-001)
 
@@ -536,5 +542,61 @@ This system provides a **reproducible draw** that ensures fairness and transpare
 By selecting a future date and publicly sharing the algorithms and parameters, anyone can verify and reproduce the exact same result.  
 
 This makes the process fair, unbiased, and open for all.
+`,
+    info: `
+## Info
+
+### Github Repo
+https://github.com/linnil1/reproducible_draw
+
+### Author
+[linnil1](https://linnil1.tw)
+ 
+### Contact As
+Please issue in Github
+
+If not familiar with Github, you can use [Google Sheet](https://docs.google.com/forms/d/e/1FAIpQLSepk3nqxEQ8QHw-FkF-uXVJm9aQOEk7Dl6Cp79WIhUsJTHTPQ/viewform?usp=sf_link) to report.
+`,
+    privacy: `
+## Privacy Policy
+
+### 1. Information Collection
+
+We do not collect personal information on this website. We may collect basic analytics data (e.g., website visits) to improve our website.
+
+### 2. Cookies
+
+Our website does not use cookies.
+
+### 3. Third-party
+
+Our website does not rely on any third-party services.
+
+### 4. Changes
+
+We may update these policies at any time. Updates will be posted on this page.
+`,
+    tos: `
+## Terms of Service
+
+### 1. Usage
+
+You may use this website for informational purposes only. You agree not to misuse the website/API or its content. Programmatic fetching of our API endpoint is discouraged; instead, we encourage you to use the original API provided by the respective data sources.
+
+### 2. Disclaimer
+
+This website is provided "as is" without warranties of any kind. We do not guarantee the accuracy or completeness of the information on this site.
+
+### 3. Source
+
+The data on our website is sourced from official APIs, including but not limited to:
+
+- [Taiwan Central Weather Administration Open Data API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html)
+
+We may integrate additional sources in the future to enhance our website’s functionality and provide more comprehensive data.
+
+### 4. Changes
+
+We may update these Terms of Service at any time. Updates will be posted on this page.
 `
 }

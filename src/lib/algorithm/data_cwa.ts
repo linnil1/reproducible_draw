@@ -16,14 +16,14 @@ export abstract class CwaData extends Data {
         if (seconds !== 0 || minutes % 10 !== 0) {
             return {
                 status: Status.FAIL,
-                text: 'results.invalidTime'
+                text: 'results.fetch.invalidTime'
             }
         }
 
         if (date > now)
             return {
                 status: Status.PENDING,
-                text: 'results.futureTime'
+                text: 'results.fetch.futureTime'
             }
 
         const sevenDaysAgo = new Date()
@@ -31,7 +31,7 @@ export abstract class CwaData extends Data {
         if (date < sevenDaysAgo) {
             return {
                 status: Status.FAIL,
-                text: 'results.unavailable'
+                text: 'results.fetch.unavailable'
             }
         }
         return {
@@ -62,7 +62,7 @@ export abstract class CwaData extends Data {
     }
 
     getState(): string {
-        return `Original Data (Fetched at ${this.data.time}):\n${JSON.stringify(this.data.data)}\n`
+        return `Original Data (Fetched at ${this.data.query_time}):\n${this.data.data}\n`
     }
 
     protected valueToString(value: any, precision: number): string {
@@ -96,19 +96,16 @@ export abstract class CwaData extends Data {
     }
 
     async fetch(date: Date): Promise<string> {
-        try {
-            const dateStr = this.toLocalISOString(date)
-            const obsTime = dateStr
-            const response = await fetch(`${this.getPath()}?datetime=${dateStr}`)
-            if (!response.ok) {
-                throw new Error('Failed to fetch weather data')
-            }
-            const dataRaw = await response.json()
-            this.data = dataRaw
-            return this.toJson(dataRaw.data.map(this.parse))
-        } catch (error) {
-            console.error('Error fetching data:', error)
-            return { error: error.message }
+        const dateStr = this.toLocalISOString(date)
+        const response = await fetch(`${this.getPath()}?datetime=${dateStr}`)
+        if (!response.ok) {
+            throw new Error('results.fetch.unexpectedError')
         }
+        const metaRaw = await response.json()
+        if (metaRaw.status != 'ok') {
+            throw new Error(metaRaw.status)
+        }
+        this.data = metaRaw
+        return this.toJson(JSON.parse(metaRaw.data).records.Station.map(this.parse))
     }
 }

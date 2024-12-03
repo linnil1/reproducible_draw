@@ -22,7 +22,7 @@
             onclick={toggleExpand}
             class="flex w-full items-center justify-between space-x-1 text-sm font-medium text-gray-800"
         >
-            <h3 class="text-2xl font-bold">{title}</h3>
+            <h3 class="text-2xl">{title}</h3>
             <Icon icon={isExpanded ? 'mdi:chevron-down' : 'mdi:chevron-up'} class="h-8 w-8" />
         </button>
     </div>

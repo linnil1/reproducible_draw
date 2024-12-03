@@ -1,7 +1,7 @@
 import { Modules } from './modules'
 
 import type { Data } from './data'
-import { Weather } from './data_weather'
+import { Weather3 } from './data_weather3'
 import { Rain } from './data_rain'
 
 import type { Hash } from './hash'
@@ -24,7 +24,7 @@ import { NaiveChoice } from './sample_naive'
 
 // Note: First one is default
 const datas = new Modules<Data>('data')
-datas.register(new Weather())
+datas.register(new Weather3())
 datas.register(new Rain())
 
 const hashs = new Modules<Hash>('hash')

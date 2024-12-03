@@ -9,10 +9,10 @@
     import SveltyPicker from 'svelty-picker'
     import { datas, hashs, generators, randoms, samples } from '$lib/algorithm'
     import type { Step } from '$lib/step'
-    import ListImplement from '$lib/list_implement.svelte'
-    import Block from '$lib/detailBlock.svelte'
-    import BlockSub from '$lib/detailSubBlock.svelte'
-    import Items from '$lib/items.svelte'
+    import ModulesSelector from '$lib/ModulesSelector.svelte'
+    import Block from '$lib/DetailBlock.svelte'
+    import BlockSub from '$lib/DetailSubBlock.svelte'
+    import Items from '$lib/Items.svelte'
     import type { Modules } from '$lib/algorithm/modules'
     import type { Sample } from '$lib/algorithm/sample'
     import { Module } from '$lib/algorithm/module'
@@ -39,10 +39,8 @@
     let allowAdvancedConfig: boolean = $state(false)
 
     // state
-    // let itemListStr: string = $state('1\n2\n3') // next line split
-    let itemListStr: string = $state(
-        '2\n3\n5\n7\n11\n13\n17\n19\n23\n29\n31\n37\n41\n43\n47\n53\n59\n61\n67\n71\n73\n79\n83\n89\n97\n101\n103\n107\n109\n113\n127\n131\n137\n139\n149\n151\n157\n163\n167\n173\n179\n181\n191\n193\n197\n199\n211\n223\n227\n229\n233\n239\n241\n251\n257\n263\n269\n271\n277\n281\n283\n293\n307\n311\n313\n317\n331\n337\n347\n349\n353\n359\n367\n373\n379\n383\n389\n397\n401\n409\n419\n421\n431\n433\n439\n443\n449\n457\n461\n463\n467\n479\n487\n491\n499\n503\n509\n521\n523\n541\n547\n557\n563\n569\n571\n577\n587\n593\n599\n601\n607\n613\n617\n619\n631\n641\n643\n647\n653\n659\n661\n673\n677\n683\n691\n701\n709\n719\n727\n733\n739\n743\n751\n757\n761\n769\n773\n787\n797\n809\n811\n821\n823\n827\n829\n839\n853\n857\n859\n863\n877\n881\n883\n887\n907\n911\n919\n929\n937\n941\n947\n953\n967\n971\n977\n983\n991\n997'
-    )
+    let itemListStr: string = $state('1\n2\n3')
+    // let itemListStr: string = $state( '2\n3\n5\n7\n11\n13\n17\n19\n23\n29\n31\n37\n41\n43\n47\n53\n59\n61\n67\n71\n73\n79\n83\n89\n97\n101\n103\n107\n109\n113\n127\n131\n137\n139\n149\n151\n157\n163\n167\n173\n179\n181\n191\n193\n197\n199\n211\n223\n227\n229\n233\n239\n241\n251\n257\n263\n269\n271\n277\n281\n283\n293\n307\n311\n313\n317\n331\n337\n347\n349\n353\n359\n367\n373\n379\n383\n389\n397\n401\n409\n419\n421\n431\n433\n439\n443\n449\n457\n461\n463\n467\n479\n487\n491\n499\n503\n509\n521\n523\n541\n547\n557\n563\n569\n571\n577\n587\n593\n599\n601\n607\n613\n617\n619\n631\n641\n643\n647\n653\n659\n661\n673\n677\n683\n691\n701\n709\n719\n727\n733\n739\n743\n751\n757\n761\n769\n773\n787\n797\n809\n811\n821\n823\n827\n829\n839\n853\n857\n859\n863\n877\n881\n883\n887\n907\n911\n919\n929\n937\n941\n947\n953\n967\n971\n977\n983\n991\n997')
     let autoRun = $state(false)
     let showConfiguration: boolean = $state(false)
     let samplesWithDupOption: Modules<Sample> = $derived(
@@ -79,7 +77,7 @@
         $page.url.searchParams.set('itemNumber', selectedItemNumber.toString())
         $page.url.searchParams.set('itemList', items.join('\n'))
         $page.url.searchParams.set('allowAdvancedConfig', allowAdvancedConfig.toString())
-        $page.url.searchParams.set('autoRun', 'true')
+        // $page.url.searchParams.set('autoRun', 'true')
         replaceState($page.url, $page.state)
     }
 
@@ -125,7 +123,7 @@
     })
 
     $effect(() => {
-        if (allowAdvancedConfig == true) {
+        if (allowAdvancedConfig == false) {
             selectedData = datas.listName()[0]
             selectedHash = hashs.listName()[0]
             selectedRandom = randoms.listName()[0]
@@ -139,7 +137,6 @@
             // Make sure all the var is set
             await tick()
             const date = new Date(`${selectedDate}${getTimeZoneOffsetStr()}`)
-            console.log(date)
             const dataModule = datas.get(selectedData)
             const hashModule = hashs.get(selectedHash)
             const generatorModule = generators.get(selectedGenerator)
@@ -147,10 +144,8 @@
             const sampleModule = samples.get(selectedSample)
             setParam()
 
-            // console.log(selectedDate, timeZone)
-            // console.log(itemListStr)
-
             // Run the pipeline
+            resultItems = []
             pipelineDetails = []
             resultsInfo = dataModule.check(date)
             if (resultsInfo.status !== Status.SUCCESS) {
@@ -211,6 +206,7 @@
                 status: Status.FAIL,
                 text: 'results.errorOccurred;' + e.message
             }
+            pipelineDetails = [] // When error occur, it's weird to show pipeline details
         }
 
         setTimeout(() => {
@@ -228,7 +224,7 @@
         class="container mx-auto flex max-h-screen flex-col justify-center space-y-4 overflow-hidden p-1 md:w-8/12"
     >
         <!-- Main.Summary -->
-        <p class="mx-auto p-2 text-center text-2xl font-semibold">
+        <p class="mx-auto p-2 text-center text-2xl">
             {#if $locale == 'tw'}
                 公平起見，我們使用
                 <span class="font-bold">{selectedDate}({timeZone})</span> 的
@@ -326,7 +322,7 @@
         />
         {$_('settings.timezone')}: <span>{timeZone}</span>
     </label>
-    <ListImplement bind:value={selectedData} modules={datas} />
+    <ModulesSelector bind:value={selectedData} modules={datas} />
 
     <label class="m-4 block flex items-center">
         <input
@@ -338,10 +334,10 @@
     </label>
 
     {#if allowAdvancedConfig}
-        <ListImplement bind:value={selectedHash} modules={hashs} />
-        <ListImplement bind:value={selectedGenerator} modules={generators} />
-        <ListImplement bind:value={selectedRandom} modules={randoms} />
-        <ListImplement bind:value={selectedSample} modules={samplesWithDupOption} />
+        <ModulesSelector bind:value={selectedHash} modules={hashs} />
+        <ModulesSelector bind:value={selectedGenerator} modules={generators} />
+        <ModulesSelector bind:value={selectedRandom} modules={randoms} />
+        <ModulesSelector bind:value={selectedSample} modules={samplesWithDupOption} />
     {/if}
     <label class="m-4 block">
         {$_('settings.itemList')}:
@@ -404,7 +400,7 @@
         </button>
     </div>
 </div>
-<!-- Click other part will close it -->
+<!-- Click other part will close the configuration -->
 {#if showConfiguration}
     <button
         class="fixed inset-0 z-30 bg-black bg-opacity-50"
@@ -415,7 +411,7 @@
     ></button>
 {/if}
 
-<!-- Second Page -->
+<!-- Second Page: Result -->
 {#if resultsInfo.status !== Status.NULL}
     <div class="container mx-auto mb-32 flex w-full flex-col overflow-hidden md:w-8/12">
         <div

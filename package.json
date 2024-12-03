@@ -14,9 +14,11 @@
         "test": "npm run test:unit -- --run"
     },
     "devDependencies": {
+        "@cartamd/plugin-anchor": "^2.1.1",
         "@iconify/svelte": "^4.0.2",
         "@stdlib/random-base-mt19937": "^0.2.1",
         "@sveltejs/adapter-auto": "^3.3.1",
+        "@sveltejs/adapter-cloudflare-workers": "^2.6.0",
         "@sveltejs/kit": "^2.8.2",
         "@sveltejs/vite-plugin-svelte": "^4.0.1",
         "@tailwindcss/typography": "^0.5.15",
@@ -34,6 +36,7 @@
         "tailwindcss": "^3.4.15",
         "typescript": "^5.7.2",
         "vite": "^5.4.11",
-        "vitest": "^2.1.5"
+        "vitest": "^2.1.5",
+        "wrangler": "^3.91.0"
     }
 }

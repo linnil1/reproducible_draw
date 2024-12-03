@@ -1,0 +1,19 @@
+{
+    "name": "draw",
+    "main": "./.cloudflare/worker.js",
+    "site": {
+        "bucket": "./.cloudflare/public"
+    },
+    "triggers": {
+        "crons": ["*/3 * * * *"]
+    },
+    "compatibility_date": "2024-10-22",
+    "workers_dev": false,
+    "route": "draw.linnil1.me/*",
+    "kv_namespaces": [
+        {
+            "binding": "data_draw",
+            "id": "84af9f2ec2f24cf8aa642455eab0486f"
+        }
+    ]
+}
