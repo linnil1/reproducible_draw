@@ -9,11 +9,13 @@ type Data = {
     data: string // JSON but in string format
 }
 
+const SavedTTL = 86400 * 32
+
 async function addDataToKv(weatherData: Data, kv: KVNamespace): Promise<Data> {
     let prevData: Data | null = await kv.get(weatherData.key, { type: 'json' })
     if (prevData === null) {
         await kv.put(weatherData.key, JSON.stringify(weatherData), {
-            expirationTtl: 86400 * 32
+            expirationTtl: SavedTTL
         })
         return weatherData
     }
@@ -23,7 +25,7 @@ async function addDataToKv(weatherData: Data, kv: KVNamespace): Promise<Data> {
     }
     prevData.query_time.push(weatherData.query_time[0])
     await kv.put(weatherData.key, JSON.stringify(prevData), {
-        expirationTtl: 86400 * 32
+        expirationTtl: SavedTTL
     })
     return prevData
 }
@@ -87,9 +89,11 @@ async function updateCwaData(env, name: string): Promise<Data> {
                 'Now,Past10Min,Past1hr,Past3hr,Past6hr,Past12hr,Past24hr,Past2days,Past3days'
         })
     else if (name == 'weather1')
+        // 'Weather,Now,WindDirection,WindSpeed,AirTemperature,RelativeHumidity,AirPressure,GustInfo,DailyHigh,DailyLow'
+        // Weather is changed even ObsTime is fixed
         return await callCwaAndPushKv(env.CWA_KEY, env.data_draw, 'weather1', 'O-A0001-001', {
             WeatherElement:
-                'Weather,Now,WindDirection,WindSpeed,AirTemperature,RelativeHumidity,AirPressure,GustInfo,DailyHigh,DailyLow'
+                'Now,WindDirection,WindSpeed,AirTemperature,RelativeHumidity,AirPressure,GustInfo,DailyHigh,DailyLow'
         })
     return {
         key: `${name}-`,

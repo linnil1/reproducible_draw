@@ -61,20 +61,19 @@ export abstract class CwaData extends Data {
     }
 
     private toDbKey(date: Date): string {
-        // Get the date and time components
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, '0')
-        const day = String(date.getDate()).padStart(2, '0')
-        const hours = String(date.getHours()).padStart(2, '0')
-        const minutes = String(date.getMinutes()).padStart(2, '0')
-        const seconds = String(date.getSeconds()).padStart(2, '0')
-        // Get the timezone offset in minutes and convert it to hours and minutes
-        const timezoneOffset = -date.getTimezoneOffset()
-        const offsetHours = String(Math.floor(Math.abs(timezoneOffset) / 60)).padStart(2, '0')
-        const offsetMinutes = String(Math.abs(timezoneOffset) % 60).padStart(2, '0')
-        const offsetSign = timezoneOffset >= 0 ? '+' : '-'
-        // Combine components into the desired format
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetMinutes}`
+        const targetOffset = 8 * 60 // +08:00
+        const localOffset = date.getTimezoneOffset()
+        const offsetDifference = targetOffset + localOffset
+        const adjustedDate = new Date(date.getTime() + offsetDifference * 60 * 1000)
+
+        // Format the adjusted date components
+        const year = adjustedDate.getFullYear()
+        const month = String(adjustedDate.getMonth() + 1).padStart(2, '0')
+        const day = String(adjustedDate.getDate()).padStart(2, '0')
+        const hours = String(adjustedDate.getHours()).padStart(2, '0')
+        const minutes = String(adjustedDate.getMinutes()).padStart(2, '0')
+        const seconds = String(adjustedDate.getSeconds()).padStart(2, '0')
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+08:00`
     }
 
     getMetaKeys(): string[] {
@@ -115,7 +114,11 @@ export abstract class CwaData extends Data {
         return `[${formattedObjects.join(',')}]`
     }
 
-    async fetch(date: Date): Promise<string> {
+    private isInKMins(date: Date, k: number): Boolean {
+        return date < new Date() && date > new Date(new Date().getTime() - k * 60 * 1000)
+    }
+
+    async fetchData(date: Date): Promise<string> {
         const params = new URLSearchParams({
             datetime: this.toDbKey(date)
         })
@@ -124,6 +127,9 @@ export abstract class CwaData extends Data {
             throw new Error('results.fetch.unexpectedError')
         }
         const metaRaw = await response.json()
+        if (metaRaw.status == 'results.fetch.keyNotFound' && this.isInKMins(date, 20)) {
+            throw new Error('results.fetch.keyNotFound1')
+        }
         if (metaRaw.status != 'ok') {
             throw new Error(metaRaw.status)
         }

@@ -30,6 +30,7 @@ export const tw = {
         fetch: {
             unexpectedError: '跟server拿取資料時發生意外錯誤。',
             keyNotFound: '無法取得天氣資料，因為資料庫中不存在。可能是查詢了未來的資料。',
+            keyNotFound1: '無法取得天氣資料，因為資料庫中不存在，或官方資料可能還沒更新。',
             dataChanged: '相同時間的資料卻不一致。',
             invalidTimePer10Min:
                 '時間必須是 *:00:00、*:10:00、*:20:00、*:30:00、*:40:00 或 *:50:00。',
@@ -87,7 +88,7 @@ API 連結在這裡：[中央氣象署開放資料 API](https://opendata.cwa.gov
     "StationName": "口湖工作站",
     "Latitude": 23.589977,
     "Longitude": 120.180400,
-    "Weather": "晴",
+    "Weather": "晴",  # 暫時刪除
     "VisibilityDescription": "-99",
     "SunshineDuration": -99.0,
     "Precipitation": 0.0,

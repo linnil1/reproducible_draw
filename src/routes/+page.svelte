@@ -150,7 +150,7 @@
             if (resultsInfo.status !== Status.SUCCESS) {
                 return
             }
-            const data = await dataModule.fetch(date)
+            const data = await dataModule.fetchData(date)
             pipelineDetails.push({
                 step: $_('results.step') + '1: ' + $_(datas.getI18nTitle()),
                 modules: datas,

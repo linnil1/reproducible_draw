@@ -20,7 +20,7 @@ export class Weather1 extends CwaData {
 
     private getWeatherKeys(): string[] {
         return [
-            'Weather',
+            // 'Weather',
             'Precipitation',
             'WindDirection',
             'WindSpeed',
@@ -74,7 +74,7 @@ export class Weather1 extends CwaData {
             Latitude: coords[0].StationLatitude,
             Longitude: coords[0].StationLongitude,
             // Weather
-            Weather: element.Weather,
+            // Weather: element.Weather,
             Precipitation: element.Now.Precipitation,
             WindDirection: element.WindDirection,
             WindSpeed: element.WindSpeed,

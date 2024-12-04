@@ -31,6 +31,8 @@ export const en = {
             unexpectedError: 'An unexpected error occurred while fetching data.',
             keyNotFound:
                 'Failed to fetch data because it is not in the database. This might be due to querying future data.',
+            keyNotFound1:
+                'Failed to fetch data because it is not in the database. The data will be available soon.',
             dataChanged: 'The data is inconsistent with the same key.',
             invalidTimePerHour: 'The time must be at *:00:00 (available per hour).',
             invalidTimePer10Min:
@@ -154,7 +156,7 @@ Each station entry includes the following fields:
     "StationName": "山佳",
     "Latitude": 23.589977,
     "Longitude": 120.180400,
-    "Weather": "晴",
+    "Weather": "晴",  # currently removed it
     "Precipitation": -99.0,
     "WindDirection": 59.0,
     "WindSpeed": 3.9,
