@@ -48,7 +48,7 @@ async function fetchIndexValue(time: string): Promise<string> {
 export async function fetchAndSaveStock(kv: KVNamespace, name: string): Promise<RawData> {
     try {
         // Fetch both datasets in parallel
-        const now = new Date('2024-12-06 12:00:00')
+        const now = new Date()
         const time = formatDate(now)
         const [indexRaw, volumeRaw] = await Promise.all([
             fetchIndexValue(time),

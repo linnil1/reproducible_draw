@@ -1,11 +1,9 @@
 <script lang="ts">
-    import { Carta, Markdown } from 'carta-md'
-    const carta = new Carta()
-
     import { replaceState } from '$app/navigation'
     import { _, locale } from 'svelte-i18n'
     import { page } from '$app/stores'
     import { onMount, tick } from 'svelte'
+    import { DateTime } from 'luxon'
     import SveltyPicker from 'svelty-picker'
     import { datas, hashs, generators, randoms, samples } from '$lib/algorithm'
     import type { Step } from '$lib/step'
@@ -17,16 +15,25 @@
     import type { Sample } from '$lib/algorithm/sample'
     import { Module } from '$lib/algorithm/module'
     import { Status, type DataResult } from '$lib/status'
-    import {
-        copyToClipboard,
-        dateToStr,
-        getTimeZoneOffsetStr,
-        splitByFirstSemicolon
-    } from '$lib/utils'
+    import { convertMinutesToTimeZone, splitByFirstSemicolon } from '$lib/utils'
+
+    function copyToClipboard(text: string): void {
+        navigator.clipboard
+            .writeText(text)
+            .then(() => {
+                alert($_('results.copySuccess'))
+            })
+            .catch((err) => {
+                console.error($_('results.copyFailure'), err)
+            })
+    }
 
     // user selected state
-    let timeZone = $state('UTC+0')
-    let selectedDate: string = $state('')
+    let pickedDate: string = $state('')
+    let selectedDate: string = $derived(
+        DateTime.fromJSDate(new Date(pickedDate)).toFormat("yyyy-MM-dd'T'HH:mm:ssZZ")
+    )
+    let timeZone: string = $state('')
     let selectedData: string = $state(datas.listName()[0])
     let selectedHash: string = $state(hashs.listName()[0])
     let selectedRandom: string = $state(randoms.listName()[0])
@@ -83,7 +90,10 @@
 
     function loadParam() {
         const params = $page.url.searchParams
-        if (params.get('date')) selectedDate = params.get('date')
+        if (params.get('date'))
+            pickedDate = DateTime.fromJSDate(new Date(params.get('date'))).toFormat(
+                'yyyy-MM-dd HH:mm:ss'
+            )
         itemListStr = params.get('items') || '1\n2\n3'
         selectedData = params.get('data') || datas.listName()[0]
         selectedGenerator = params.get('generator') || generators.listName()[0]
@@ -108,8 +118,8 @@
         const now = new Date()
         now.setSeconds(0)
         now.setMinutes(Math.floor(now.getMinutes() / 10) * 10)
-        selectedDate = dateToStr(now)
-        timeZone = 'GMT' + getTimeZoneOffsetStr()
+        timeZone = convertMinutesToTimeZone(DateTime.fromJSDate(now).offset)
+        pickedDate = DateTime.fromJSDate(now).toFormat('yyyy-MM-dd HH:mm:ss')
         loadParam()
         if (autoRun) {
             submitPipeline()
@@ -135,7 +145,7 @@
         try {
             // Make sure all the var is set
             await tick()
-            const date = new Date(`${selectedDate}${getTimeZoneOffsetStr()}`)
+            const date = new Date(selectedDate)
             const dataModule = datas.get(selectedData)
             const hashModule = hashs.get(selectedHash)
             const generatorModule = generators.get(selectedGenerator)
@@ -226,7 +236,7 @@
         <p class="mx-auto p-2 text-center text-2xl">
             {#if $locale == 'tw'}
                 公平起見，我們使用
-                <span class="font-bold">{selectedDate}({timeZone})</span> 的
+                <span class="font-bold">{selectedDate}</span> 的
                 <span class="font-bold">{$_(datas.get(selectedData).getI18nName())}</span>
                 資料作為亂數的基礎。
                 {#if allowAdvancedConfig}
@@ -255,8 +265,7 @@
                 <!--english-->
                 To ensure fairness,
                 <span class="font-bold">{$_(datas.get(selectedData).getI18nName())}</span> data at
-                <span class="font-bold">{selectedDate}({timeZone})</span> is used as the basis for
-                randomness.
+                <span class="font-bold">{selectedDate}</span> is used as the basis for randomness.
 
                 {#if allowAdvancedConfig}
                     The data is processed through the hash function
@@ -317,7 +326,7 @@
             inputClasses="w-full bg-white border border-gray-300 rounded-lg p-1 hover:border-blue-400 focus:outline-none focus:border-blue-500"
             mode="datetime"
             format="yyyy-mm-dd hh:ii:ss"
-            bind:value={selectedDate}
+            bind:value={pickedDate}
         />
         {$_('settings.timezone')}: <span>{timeZone}</span>
     </label>

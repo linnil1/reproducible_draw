@@ -1,5 +1,6 @@
 import { Status, type DataResult } from '$lib/status'
 import { Data } from './data'
+import { DateTime } from 'luxon'
 
 export abstract class CwaData extends Data {
     private data: any
@@ -60,22 +61,6 @@ export abstract class CwaData extends Data {
         }
     }
 
-    private toDbKey(date: Date): string {
-        const targetOffset = 8 * 60 // +08:00
-        const localOffset = date.getTimezoneOffset()
-        const offsetDifference = targetOffset + localOffset
-        const adjustedDate = new Date(date.getTime() + offsetDifference * 60 * 1000)
-
-        // Format the adjusted date components
-        const year = adjustedDate.getFullYear()
-        const month = String(adjustedDate.getMonth() + 1).padStart(2, '0')
-        const day = String(adjustedDate.getDate()).padStart(2, '0')
-        const hours = String(adjustedDate.getHours()).padStart(2, '0')
-        const minutes = String(adjustedDate.getMinutes()).padStart(2, '0')
-        const seconds = String(adjustedDate.getSeconds()).padStart(2, '0')
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+08:00`
-    }
-
     getMetaKeys(): string[] {
         return ['ObsTime', 'StationId', 'StationName', 'Latitude', 'Longitude']
     }
@@ -120,7 +105,10 @@ export abstract class CwaData extends Data {
 
     async fetchData(date: Date): Promise<string> {
         const params = new URLSearchParams({
-            datetime: this.toDbKey(date)
+            // 2024-12-08T01:00:00+08:00
+            datetime: DateTime.fromJSDate(date)
+                .setZone('Asia/Taipei')
+                .toFormat("yyyy-MM-dd'T'HH:mm:ssZZ")
         })
         const response = await fetch(`${this.getPath()}?${params.toString()}`)
         if (!response.ok) {
@@ -128,7 +116,7 @@ export abstract class CwaData extends Data {
         }
         const metaRaw = await response.json()
         if (metaRaw.status == 'results.fetch.keyNotFound' && this.isInKMins(date, 20)) {
-            throw new Error('results.fetch.keyNotFound1')
+            throw new Error('results.fetch.keyNotFoundWithShortSyncTime')
         }
         if (metaRaw.status != 'ok') {
             throw new Error(metaRaw.status)

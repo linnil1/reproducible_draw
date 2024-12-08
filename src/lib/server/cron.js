@@ -13,7 +13,7 @@ async function cron(event, env) {
         case '*/20 * * * *':
             await fetch1Hour(env)
             break
-        case '00 14 * * *':
+        case '00 06 * * *':  // 14:00 in Taiwan
             await fetchStock(env)
             break
     }
