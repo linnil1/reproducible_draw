@@ -658,7 +658,7 @@ https://github.com/linnil1/reproducible_draw
 ### Contact As
 Please issue in Github
 
-If not familiar with Github, you can use [Google Sheet](https://docs.google.com/forms/d/e/1FAIpQLSepk3nqxEQ8QHw-FkF-uXVJm9aQOEk7Dl6Cp79WIhUsJTHTPQ/viewform?usp=sf_link) to report.
+If not familiar with Github, you can use [Google Sheet](https://docs.google.com/forms/d/e/1FAIpQLSfqUmfd2H0TJ_TUL_9EcOiX8eSCNNH9eblphLITvoOJPs3LOQ/viewform?usp=sf_link) to report.
 `,
     privacy: `
 ## Privacy Policy

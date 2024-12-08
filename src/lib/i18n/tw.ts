@@ -644,7 +644,7 @@ https://github.com/linnil1/reproducible_draw
 ### 聯繫我們
 請在 Github 提出 Issue
 
-如果您不熟悉 Github，可以透過 [Google 表單](https://docs.google.com/forms/d/e/1FAIpQLSepk3nqxEQ8QHw-FkF-uXVJm9aQOEk7Dl6Cp79WIhUsJTHTPQ/viewform?usp=sf_link)回報
+如果您不熟悉 Github，可以透過 [Google 表單](https://docs.google.com/forms/d/e/1FAIpQLSfqUmfd2H0TJ_TUL_9EcOiX8eSCNNH9eblphLITvoOJPs3LOQ/viewform?usp=sf_link)回報
 `,
     privacy: `
 ## 隱私政策

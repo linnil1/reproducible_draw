@@ -46,10 +46,11 @@ async function fetchIndexValue(time: string): Promise<string> {
 }
 
 export async function fetchAndSaveStock(kv: KVNamespace, name: string): Promise<RawData> {
+    const now = new Date()
+    const time = formatDate(now)
+    const key = `${name}-${time}`
     try {
         // Fetch both datasets in parallel
-        const now = new Date()
-        const time = formatDate(now)
         const [indexRaw, volumeRaw] = await Promise.all([
             fetchIndexValue(time),
             fetchTradeVolume(time)
@@ -61,12 +62,13 @@ export async function fetchAndSaveStock(kv: KVNamespace, name: string): Promise<
             FetchTime: now.toISOString()
         }
 
-        await kv.put(`${name}-${time}`, JSON.stringify(rawData), {
+        await kv.put(key, JSON.stringify(rawData), {
             expirationTtl: SavedTTL
         })
+        console.log(`Saved ${key}`)
         return rawData
     } catch (error) {
-        console.error(`Error in fetchAndSaveData: ${(error as Error).message}`)
+        console.error(`Fail ${key}: ${(error as Error).message}`)
         return null
     }
 }

@@ -28,6 +28,7 @@ export class Stock extends Data {
                 text: 'results.fetch.outOfTradingTime'
             }
         }
+
         if (taiwanDate.second % 5 != 0) {
             return {
                 status: Status.FAIL,
