@@ -13,6 +13,9 @@ async function cron(event, env) {
         case '*/20 * * * *':
             await fetch1Hour(env)
             break
+        case '00 14 * * *':
+            await fetchStock(env)
+            break
     }
 }
 
@@ -23,4 +26,8 @@ async function fetch10Min(env) {
 
 async function fetch1Hour(env) {
     await updateCwaData(env, 'weather1')
+}
+
+async function fetchStock(env) {
+    await fetchAndSaveStock(env, 'stock')
 }

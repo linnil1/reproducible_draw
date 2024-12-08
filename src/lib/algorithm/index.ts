@@ -4,6 +4,7 @@ import type { Data } from './data'
 import { Weather3 } from './data_weather3'
 import { Rain2 } from './data_rain2'
 import { Weather1 } from './data_weather1'
+import { Stock } from './data_stock'
 
 import type { Hash } from './hash'
 import { SHA256 } from './hash_sha256'
@@ -28,6 +29,7 @@ const datas = new Modules<Data>('data')
 datas.register(new Weather3())
 datas.register(new Rain2())
 datas.register(new Weather1())
+datas.register(new Stock())
 
 const hashs = new Modules<Hash>('hash')
 hashs.register(new SHA256())

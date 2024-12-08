@@ -31,15 +31,20 @@ export const en = {
             unexpectedError: 'An unexpected error occurred while fetching data.',
             keyNotFound:
                 'Failed to fetch data because it is not in the database. This might be due to querying future data.',
-            keyNotFound1:
-                'Failed to fetch data because it is not in the database. The data will be available soon.',
             dataChanged: 'The data is inconsistent with the same key.',
+            invalidTimePer5s: 'The time must be at *:*:*0 or *:*:*5 (available per 5s).',
             invalidTimePerHour: 'The time must be at *:00:00 (available per hour).',
             invalidTimePer10Min:
                 'The time must be at *:00:00, *:10:00, *:20:00, *:30:00, *:40:00, or *:50:00.',
             futureTime: 'The specified time is in the future.',
             unavailable:
-                'The specified time is more than 7 days ago. Data for dates older than 7 days is not available in the database.'
+                'The specified time is more than 7 days ago. Data for dates older than 7 days is not available in the database.',
+            outOfTradingTime:
+                'The query time is outside trading hours. Trading hours are on weekdays from 09:00 to 13:30.',
+            keyNotFoundWithShortSyncTime:
+                'Failed to fetch data because it is not yet in the database. Our database is syncing with the data source, and the data will be available shortly.',
+            keyNotFoundWithSpecificSyncTime:
+                'Failed to fetch data because the original source has not been updated yet. Our service will sync the data at 14:00. Please try again later.'
         },
         result: 'Result',
         step: 'Step',
@@ -235,6 +240,81 @@ If a field is missing from one of the APIs, it will be filled with \`null\` to m
 #### 5. Output Format:
 The final JSON output is compact, without spaces or newlines
 `
+    },
+    data_stock: {
+        name: 'Taiwan Stock Data',
+        description: `## Taiwan Stock Data
+
+This module retrieves real-time stock data from Taiwan's stock exchange, including index values and trading volumes.  
+
+### Data Sources:
+Stock data is sourced from the following websites:
+- [Taiwan Stock Exchange (Index Values, updated every 5 seconds)](https://www.twse.com.tw/zh/indices/taiex/mi-5min-indices.html)
+- [Taiwan Stock Exchange (Trade Volumes, updated every 5 seconds)](https://www.twse.com.tw/pcversion/zh/page/trading/exchange/MI_5MINS.html)
+
+Both data sources are updated at 5-second intervals.  
+However, these updates are not real-time. The Taiwan Stock Exchange typically updates the data at around 13:40, and our system synchronizes the data at 14:00.
+
+### Data Fields:
+This module combines two types of stock data in the following order:
+1. **Index Value Fields**: Retains the original field order from the source.
+2. **Trade Volume Fields**: Retains the original field order but excludes the time field (to avoid duplication).
+
+### Formats:
+The final JSON output includes all fields in the specified order. An example entry is as follows:
+
+\`\`\`json
+{
+    "時間": "12:00:00",
+    "發行量加權股價指數": "23,250.92",
+    "未含金融保險股指數": "20,296.21",
+    "未含電子股指數": "19,746.79",
+    "未含金融電子股指數": "14,887.14",
+    "水泥類指數": "158.88",
+    "食品類指數": "2,260.18",
+    "塑膠類指數": "125.17",
+    "紡織纖維類指數": "618.61",
+    "電機機械類指數": "388.66",
+    "電器電纜類指數": "94.53",
+    "化學生技醫療類指數": "136.08",
+    "化學類指數": "170.71",
+    "生技醫療類指數": "73.70",
+    "玻璃陶瓷類指數": "52.61",
+    "造紙類指數": "302.38",
+    "鋼鐵類指數": "126.68",
+    "橡膠類指數": "287.00",
+    "汽車類指數": "381.52",
+    "電子類指數": "1,279.40",
+    "半導體類指數": "649.49",
+    "電腦及週邊設備類指數": "283.16",
+    "光電類指數": "40.03",
+    "通信網路類指數": "166.47",
+    "電子零組件類指數": "236.91",
+    "電子通路類指數": "254.51",
+    "資訊服務類指數": "226.52",
+    "其他電子類指數": "181.06",
+    "建材營造類指數": "570.16",
+    "航運類指數": "205.64",
+    "觀光類指數": "119.62",
+    "金融保險類指數": "2,138.33",
+    "貿易百貨類指數": "295.28",
+    "油電燃氣類指數": "58.76",
+    "其他類指數": "333.72",
+    "累積委託買進筆數": "9,855,272",
+    "累積委託買進數量": "37,826,010",
+    "累積委託賣出筆數": "11,579,746",
+    "累積委託賣出數量": "26,862,295",
+    "累積成交筆數": "1,250,078",
+    "累積成交數量": "4,806,413",
+    "累積成交金額": "254,777"
+}
+\`\`\`
+
+### Handling Missing Data:
+If data is missing, the system will return an error message.
+
+### Output Format:
+The final JSON output is compact, with no extra spaces or newlines, to ensure efficient storage and fast processing.`
     },
     hash: {
         name: 'Hashing Module',
