@@ -1,22 +1,19 @@
 // CWA specific lib
 import { json } from '@sveltejs/kit'
 import type { KVNamespace } from '@cloudflare/workers-types'
+import { saveToKv } from './utils'
 
-type Data = {
+type CwaData = {
     key: string
     query_time: string[] // list of isoformat (str)
     status: string
     data: string // JSON but in string format
 }
 
-const SavedTTL = 86400 * 32
-
-async function addDataToKv(weatherData: Data, kv: KVNamespace): Promise<Data> {
-    let prevData: Data | null = await kv.get(weatherData.key, { type: 'json' })
+async function addDataToKv(weatherData: CwaData, kv: KVNamespace): Promise<CwaData> {
+    let prevData: CwaData | null = await kv.get(weatherData.key, { type: 'json' })
     if (prevData === null) {
-        await kv.put(weatherData.key, JSON.stringify(weatherData), {
-            expirationTtl: SavedTTL
-        })
+        await saveToKv(kv, weatherData.key, weatherData)
         return weatherData
     }
 
@@ -24,13 +21,11 @@ async function addDataToKv(weatherData: Data, kv: KVNamespace): Promise<Data> {
         prevData.status = 'results.fetch.dataChanged'
     }
     prevData.query_time.push(weatherData.query_time[0])
-    await kv.put(weatherData.key, JSON.stringify(prevData), {
-        expirationTtl: SavedTTL
-    })
+    await saveToKv(kv, weatherData.key, prevData)
     return prevData
 }
 
-async function getCwaRawData(key: string, method: string, elements) {
+async function getCwaRawData(key: string, method: string, elements: Record<string, string>) {
     const url = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore/' + method
     const params = new URLSearchParams({
         Authorization: key,
@@ -50,8 +45,8 @@ async function callCwaAndPushKv(
     kv: KVNamespace,
     name: string,
     method: string,
-    elements
-): Promise<Data> {
+    elements: Record<string, string>
+): Promise<CwaData> {
     try {
         console.log(new Date(), name, method)
         const weatherRaw = await getCwaRawData(key, method, elements) // Fetch raw weather data
@@ -77,7 +72,7 @@ async function callCwaAndPushKv(
     }
 }
 
-async function updateCwaData(env, name: string): Promise<Data> {
+async function updateCwaData(env, name: string): Promise<CwaData> {
     if (name == 'weather3')
         return await callCwaAndPushKv(env.CWA_KEY, env.data_draw, 'weather3', 'O-A0003-001', {
             WeatherElement:
@@ -108,7 +103,7 @@ export function createCwaEndpoint(name: string) {
         GET: async function GET({ platform, url }) {
             const datetime = url.searchParams.get('datetime')
             const key = `${name}-${datetime}`
-            const data: Data | null = await platform.env.data_draw.get(key, {
+            const data: CwaData | null = await platform.env.data_draw.get(key, {
                 type: 'json'
             })
             if (data == null) {

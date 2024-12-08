@@ -37,7 +37,7 @@ export const tw = {
                 '時間必須是 *:00:00、*:10:00、*:20:00、*:30:00、*:40:00 或 *:50:00。',
             invalidTimePerHour: '時間必須是 *:00:00（整點）。',
             futureTime: '使用未來的時間。時間尚未到來，請耐心等待',
-            unavailable: '指定的時間超過了 7 天前。資料庫中不提供超過 7 天前資料。',
+            unavailable: '指定的時間超過了 30 天前。我們的資料庫中不提供超過 30 天前資料。',
             outOfTradingTime: '查詢時間不在交易時段內。交易時段為平日的 09:00 至 13:30。',
             keyNotFoundWithShortSyncTime:
                 '由於資料尚未進入資料庫，無法取得資料。我們的資料庫正在與資料來源同步，資料將很快可用。',
@@ -635,6 +635,9 @@ print(naive_selection_with_replacement(random, [1, 2, 3, 4, 5], 3))
     info: `
 ## 資訊
 
+### 網站
+https://draw.linnil1.me
+
 ### Github
 https://github.com/linnil1/reproducible_draw
 
@@ -681,6 +684,8 @@ https://github.com/linnil1/reproducible_draw
 本網站的數據來自官方 API，包括但不限於：
 
 - [臺灣中央氣象署開放資料 API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html)
+- [台灣證券交易所（每5秒更新的指數值）](https://www.twse.com.tw/zh/indices/taiex/mi-5min-indices.html)
+- [台灣證券交易所（每5秒更新的委託量）](https://www.twse.com.tw/pcversion/zh/page/trading/exchange/MI_5MINS.html)
 
 未來，我們可能會整合其他資料來源，以增強網站功能並提供更全面的數據。
 

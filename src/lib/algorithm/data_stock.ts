@@ -36,7 +36,7 @@ export class Stock extends Data {
             }
         }
 
-        if (taiwanDate < now.plus({ days: -7 })) {
+        if (this.isUnavailable(date)) {
             return {
                 status: Status.FAIL,
                 text: 'results.fetch.unavailable'

@@ -7,7 +7,7 @@ yarn
 npx wrangler kv namespace create data_draw
 npx wrangler kv key put --binding data_draw weather1 --path example_weather1.json --local
 npx wrangler kv key put --binding data_draw weather3 --path example_weather3.json --local
-npx wrangler kv key put --binding data_draw rain     --path example_rain.json     --local
+npx wrangler kv key put --binding data_draw rain2    --path example_rain2.json    --local
 npx wrangler kv key put --binding data_draw stock    --path example_stock.json    --local
 # Add these in your .dev.vars
 # CWA_KEY = "xxx"

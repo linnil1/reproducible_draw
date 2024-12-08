@@ -8,7 +8,7 @@ export abstract class CwaData extends Data {
     abstract getPath(): string
     abstract getKeys(): string[]
     abstract fieldFormatter(key: string, value: any): string
-    abstract parse()
+    abstract parse(data: Record<string, any>): Record<string, any>
 
     protected check10Min(date: Date): DataResult {
         const minutes = date.getMinutes()
@@ -47,9 +47,7 @@ export abstract class CwaData extends Data {
                 status: Status.PENDING,
                 text: 'results.fetch.futureTime'
             }
-        const sevenDaysAgo = new Date()
-        sevenDaysAgo.setDate(now.getDate() - 7)
-        if (date < sevenDaysAgo) {
+        if (this.isUnavailable(date)) {
             return {
                 status: Status.FAIL,
                 text: 'results.fetch.unavailable'

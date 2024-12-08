@@ -53,7 +53,7 @@ export class Rain2 extends CwaData {
         ]
     }
 
-    parse(data) {
+    parse(data: Record<string, any>): Record<string, any> {
         const coords = data.GeoInfo.Coordinates.filter((coord) => coord.CoordinateName === 'WGS84')
         if (!coords.length) {
             throw new Error('WGS84 coordinates not found')

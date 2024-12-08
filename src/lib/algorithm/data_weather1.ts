@@ -60,7 +60,7 @@ export class Weather1 extends CwaData {
         return this.valueToString(value, -1)
     }
 
-    parse(data) {
+    parse(data: Record<string, any>): Record<string, any> {
         const coords = data.GeoInfo.Coordinates.filter((coord) => coord.CoordinateName === 'WGS84')
         if (!coords.length) {
             throw new Error('WGS84 coordinates not found')

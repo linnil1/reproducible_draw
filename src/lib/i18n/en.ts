@@ -38,7 +38,7 @@ export const en = {
                 'The time must be at *:00:00, *:10:00, *:20:00, *:30:00, *:40:00, or *:50:00.',
             futureTime: 'The specified time is in the future.',
             unavailable:
-                'The specified time is more than 7 days ago. Data for dates older than 7 days is not available in the database.',
+                'The specified time is more than 30 days ago. Data for dates older than 30 days is not available in our database.',
             outOfTradingTime:
                 'The query time is outside trading hours. Trading hours are on weekdays from 09:00 to 13:30.',
             keyNotFoundWithShortSyncTime:
@@ -649,6 +649,9 @@ This makes the process fair, unbiased, and open for all.
     info: `
 ## Info
 
+### Website
+https://draw.linnil1.me
+
 ### Github Repo
 https://github.com/linnil1/reproducible_draw
 
@@ -695,6 +698,8 @@ This website is provided "as is" without warranties of any kind. We do not guara
 The data on our website is sourced from official APIs, including but not limited to:
 
 - [Taiwan Central Weather Administration Open Data API](https://opendata.cwa.gov.tw/dist/opendata-swagger.html)
+- [Taiwan Stock Exchange (Index Values)](https://www.twse.com.tw/zh/indices/taiex/mi-5min-indices.html)
+- [Taiwan Stock Exchange (Trade Volumes)](https://www.twse.com.tw/pcversion/zh/page/trading/exchange/MI_5MINS.html)
 
 We may integrate additional sources in the future to enhance our website’s functionality and provide more comprehensive data.
 

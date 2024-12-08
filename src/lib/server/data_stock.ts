@@ -1,11 +1,11 @@
 import type { KVNamespace } from '@cloudflare/workers-types'
+import { saveToKv } from './utils'
 
-export interface RawData {
+export interface StockData {
     IndexValue_5s: string
     TradeVolume_5s: string
     FetchTime: string
 }
-const SavedTTL = 86400 * 32
 
 // Date to YYYYMMDD
 export function formatDate(date: Date): string {
@@ -45,7 +45,7 @@ async function fetchIndexValue(time: string): Promise<string> {
     return response.text()
 }
 
-export async function fetchAndSaveStock(kv: KVNamespace, name: string): Promise<RawData> {
+export async function fetchAndSaveStock(kv: KVNamespace, name: string): Promise<StockData | null> {
     const now = new Date()
     const time = formatDate(now)
     const key = `${name}-${time}`
@@ -56,17 +56,14 @@ export async function fetchAndSaveStock(kv: KVNamespace, name: string): Promise<
             fetchTradeVolume(time)
         ])
 
-        const rawData: RawData = {
+        const data: StockData = {
             IndexValue_5s: indexRaw,
             TradeVolume_5s: volumeRaw,
             FetchTime: now.toISOString()
         }
-
-        await kv.put(key, JSON.stringify(rawData), {
-            expirationTtl: SavedTTL
-        })
+        await saveToKv(kv, key, data)
         console.log(`Saved ${key}`)
-        return rawData
+        return data
     } catch (error) {
         console.error(`Fail ${key}: ${(error as Error).message}`)
         return null

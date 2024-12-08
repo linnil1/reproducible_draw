@@ -26,4 +26,3 @@ vite.config.ts.timestamp-*
 
 # data
 *.jsonl
-*.py
