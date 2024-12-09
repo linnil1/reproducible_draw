@@ -72,10 +72,9 @@ export class Stock extends Data {
             datetime: taiwanDate.toFormat('yyyyMMdd')
         })
         const response = await fetch(`/data/stock?${params.toString()}`)
-        const responseData = await response.json()
-        this.data = responseData
-        if (responseData.status != 'ok') {
-            throw new Error(responseData.status)
+        this.data = await response.json()
+        if (this.data.status != 'ok') {
+            throw new Error(this.data.status)
         }
         const time = taiwanDate.toFormat('HH:mm:ss')
 
@@ -101,6 +100,6 @@ export class Stock extends Data {
     }
 
     getState(): string {
-        return `Original Data (Fetched at ${this.data.FetchTime}):\n${this.data.IndexValue_5s}\n${this.data.TradeVolume_5s}`
+        return `Original Data (Fetched at ${this.data.query_time}):\n1.Index\n${this.data.IndexValue_5s}\n2.Amount:\n${this.data.TradeVolume_5s}`
     }
 }

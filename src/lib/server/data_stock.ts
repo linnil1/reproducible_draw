@@ -1,10 +1,13 @@
 import type { KVNamespace } from '@cloudflare/workers-types'
-import { saveToKv } from './utils'
+import { checkAndSaveToKv, saveToKv, type SavedData } from './utils'
 
-export interface StockData {
+export interface StockData extends SavedData {
     IndexValue_5s: string
     TradeVolume_5s: string
-    FetchTime: string
+}
+
+function isStockDataSame(a: StockData, b: StockData): boolean {
+    return a.IndexValue_5s == b.IndexValue_5s && a.TradeVolume_5s == b.TradeVolume_5s
 }
 
 // Date to YYYYMMDD
@@ -57,13 +60,15 @@ export async function fetchAndSaveStock(kv: KVNamespace, name: string): Promise<
         ])
 
         const data: StockData = {
+            key: key,
+            query_time: [now.toISOString()],
+            status: 'ok',
             IndexValue_5s: indexRaw,
-            TradeVolume_5s: volumeRaw,
-            FetchTime: now.toISOString()
+            TradeVolume_5s: volumeRaw
         }
-        await saveToKv(kv, key, data)
+        const dataNew = await checkAndSaveToKv(kv, data, isStockDataSame)
         console.log(`Saved ${key}`)
-        return data
+        return dataNew
     } catch (error) {
         console.error(`Fail ${key}: ${(error as Error).message}`)
         return null

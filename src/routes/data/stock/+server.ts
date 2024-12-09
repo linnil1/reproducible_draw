@@ -11,10 +11,7 @@ export async function GET({ platform, url }) {
     if (data == null) {
         return json({ status: 'results.fetch.keyNotFound' })
     }
-    return json({
-        status: 'ok',
-        ...data
-    })
+    return json(data)
 }
 
 export async function POST({ platform, request }) {

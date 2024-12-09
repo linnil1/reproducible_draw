@@ -1,28 +1,14 @@
 // CWA specific lib
 import { json } from '@sveltejs/kit'
 import type { KVNamespace } from '@cloudflare/workers-types'
-import { saveToKv } from './utils'
+import { checkAndSaveToKv, saveToKv, type SavedData } from './utils'
 
-type CwaData = {
-    key: string
-    query_time: string[] // list of isoformat (str)
-    status: string
+interface CwaData extends SavedData {
     data: string // JSON but in string format
 }
 
-async function addDataToKv(weatherData: CwaData, kv: KVNamespace): Promise<CwaData> {
-    let prevData: CwaData | null = await kv.get(weatherData.key, { type: 'json' })
-    if (prevData === null) {
-        await saveToKv(kv, weatherData.key, weatherData)
-        return weatherData
-    }
-
-    if (prevData.data !== weatherData.data) {
-        prevData.status = 'results.fetch.dataChanged'
-    }
-    prevData.query_time.push(weatherData.query_time[0])
-    await saveToKv(kv, weatherData.key, prevData)
-    return prevData
+function isCwsDataSame(a: CwaData, b: CwaData): boolean {
+    return a.data == b.data
 }
 
 async function getCwaRawData(key: string, method: string, elements: Record<string, string>) {
@@ -57,10 +43,10 @@ async function callCwaAndPushKv(
             status: 'ok',
             data: weatherRaw
         }
-        const modifiedData = await addDataToKv(weatherData, kv)
-        modifiedData.data = ''
-        console.log(JSON.stringify(modifiedData))
-        return modifiedData
+        const dataNew = await checkAndSaveToKv(kv, weatherData, isCwsDataSame)
+        dataNew.data = ''
+        console.log(JSON.stringify(dataNew))
+        return dataNew
     } catch (e) {
         console.log(e.toString())
         return {
