@@ -5,7 +5,7 @@
         "bucket": "./.cloudflare/public"
     },
     "triggers": {
-        "crons": ["*/3 * * * *", "*/20 * * * *", "0 6 * * *"]
+        "crons": ["*/3 * * * *", "*/20 * * * *", "*/10 6 * * *"]
     },
     "compatibility_date": "2024-10-22",
     "workers_dev": false,

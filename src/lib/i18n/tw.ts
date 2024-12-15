@@ -11,6 +11,7 @@ export const tw = {
         openSettings: '開啟設定',
         close: '關閉',
         copyToClipboard: '複製到剪貼簿',
+        copyResultToClipboard: '複製結果到剪貼簿',
         copyShareLink: '複製分享連結'
     },
     settings: {

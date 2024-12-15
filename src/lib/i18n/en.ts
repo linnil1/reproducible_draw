@@ -11,6 +11,7 @@ export const en = {
         openSettings: 'Open Settings',
         close: 'Close',
         copyToClipboard: 'Copy to Clipboard',
+        copyResultToClipboard: 'Copy Result to Clipboard',
         copyShareLink: 'Copy Sharable Link'
     },
     settings: {

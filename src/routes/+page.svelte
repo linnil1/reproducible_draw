@@ -3,6 +3,7 @@
     import { _, locale } from 'svelte-i18n'
     import { page } from '$app/stores'
     import { onMount, tick } from 'svelte'
+    import Icon from '@iconify/svelte'
     import { DateTime } from 'luxon'
     import SveltyPicker from 'svelty-picker'
     import { datas, hashs, generators, randoms, samples } from '$lib/algorithm'
@@ -16,6 +17,7 @@
     import { Module } from '$lib/algorithm/module'
     import { Status, type DataResult } from '$lib/status'
     import { convertMinutesToTimeZone, splitByFirstSemicolon } from '$lib/utils'
+    import Button from '$lib/Button.svelte'
 
     function copyToClipboard(text: string): void {
         navigator.clipboard
@@ -324,22 +326,22 @@
         <div class="mx-2 overflow-scroll">
             <Items datas={items.map((item, i) => [i, item])} />
         </div>
+
         <!-- Main.Submit Button -->
         <div class="flex justify-center space-x-4">
-            <button
+            <Button
                 onclick={() => {
                     showConfiguration = !showConfiguration
                 }}
-                class="w-5/12 rounded bg-blue-500 p-2 text-white transition hover:bg-blue-600"
-            >
-                {$_('button.openSettings')}
-            </button>
-            <button
+                icon="material-symbols:settings-outline"
+                text={$_('button.openSettings')}
+            />
+            <Button
                 onclick={submitPipeline}
-                class="w-5/12 rounded bg-blue-500 p-2 text-white transition hover:bg-blue-600"
-            >
-                {$_('button.run')}
-            </button>
+                classes="flex-grow"
+                icon="material-symbols:play-arrow"
+                text={$_('button.run')}
+            />
         </div>
     </div>
 </div>
@@ -428,14 +430,14 @@
     </label>
 
     <div class="m-2">
-        <button
-            class="w-full rounded bg-gray-500 p-2 text-white transition hover:bg-gray-600"
+        <Button
             onclick={() => {
                 showConfiguration = false
             }}
-        >
-            {$_('button.close')}
-        </button>
+            classes="w-full"
+            icon="material-symbols:close"
+            text={$_('button.close')}
+        />
     </div>
 </div>
 <!-- Click other part will close the configuration -->
@@ -479,19 +481,19 @@
                 {/if}
             </div>
             <div class="flex w-full justify-center space-x-4">
-                <button
-                    class="w-5/12 rounded bg-blue-500 p-2 text-white transition hover:bg-blue-600"
+                <Button
+                    classes="flex-grow"
                     onclick={() => copyToClipboard($page.url.toString())}
-                >
-                    {$_('button.copyShareLink')}
-                </button>
+                    icon="material-symbols:link"
+                    text={$_('button.copyShareLink')}
+                />
                 {#if resultItems.length}
-                    <button
-                        class="w-5/12 rounded bg-blue-500 p-2 text-white transition hover:bg-blue-600"
+                    <Button
+                        classes="flex-grow"
                         onclick={() => copyToClipboard(resultItems.map((i) => items[i]).join('\n'))}
-                    >
-                        {$_('button.copyToClipboard')}
-                    </button>
+                        icon="material-symbols:content-copy"
+                        text={$_('button.copyResultToClipboard')}
+                    />
                 {/if}
             </div>
         </div>

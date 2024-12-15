@@ -13,10 +13,7 @@
     })
 </script>
 
-<div
-    class={'container m-4 mx-auto flex flex-col justify-center rounded-lg bg-gray-50 shadow-lg ' +
-        bgColor}
->
+<div class={'container m-4 mx-auto flex flex-col justify-center rounded-lg shadow-lg ' + bgColor}>
     <div class="m-6 flex items-center space-x-2">
         <button
             onclick={toggleExpand}
