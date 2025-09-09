@@ -1,6 +1,6 @@
 // In svelte, it is hard to use Cloudflare Trigger
 // https://github.com/sveltejs/kit/issues/4841
-entry_default.scheduled = async (event, env, ctx) => {
+worker_default.scheduled = async (event, env, ctx) => {
     ctx.waitUntil(cron(event, env))
 }
 

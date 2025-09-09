@@ -443,7 +443,7 @@
 <!-- Click other part will close the configuration -->
 {#if showConfiguration}
     <button
-        class="fixed inset-0 z-30 bg-black bg-opacity-50"
+        class="fixed inset-0 z-30 bg-black/50"
         aria-label="close the configuration"
         onclick={() => {
             showConfiguration = false

@@ -3,7 +3,7 @@
 ## Init
 
 ```bash
-yarn
+npm install
 npx wrangler kv namespace create data_draw
 npx wrangler kv key put --binding data_draw weather1 --path example_weather1.json --local
 npx wrangler kv key put --binding data_draw weather3 --path example_weather3.json --local
@@ -17,19 +17,19 @@ npx wrangler secret put CWA_KEY
 ## Developing
 
 ```bash
-yarn run dev
+npm run dev
 ```
 
 ## Building
 
 ```bash
-yarn deploy
+npm run deploy
 ```
 
 or (Svelte did not support cron trigger)
 
 ```bash
-yarn build
-cat src/lib/server/cron.js >> .cloudflare/worker.js
+npm run build
+cat src/lib/server/cron.js >> .svelte-kit/cloudflare/_worker.js
 npx wrangler deploy
 ```
