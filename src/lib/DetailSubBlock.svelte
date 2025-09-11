@@ -2,7 +2,12 @@
     import Icon from '@iconify/svelte'
     import { Carta, Markdown } from 'carta-md'
     const carta = new Carta()
-    let { title, type, value = '', children } = $props()
+    let { title, type, value = '', children } = $props<{
+        title: string
+        type?: 'modules' | 'module' | 'state' | 'output' | string
+        value?: string
+        children?: (() => any)
+    }>()
 
     let bgColor = $derived.by(() => {
         if (type === 'modules') return 'bg-blue-50 '
@@ -16,7 +21,7 @@
         else if (type === 'module') return 'border-green-300 '
         else if (type === 'state') return 'border-gray-300'
         else if (type === 'output') return 'border-yellow-300'
-        else return 'bg-gray-300 '
+        else return 'border-gray-300 '
     })
 </script>
 

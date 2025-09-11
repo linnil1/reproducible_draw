@@ -54,7 +54,7 @@
     let showConfiguration: boolean = $state(false)
     let isEdited = $state(false)
     let samplesWithDupOption: Modules<Sample> = $derived(
-        samples.clone((i) => i.allowDuplicated() == allowDuplicated)
+        samples.clone((i: Sample) => i.allowDuplicated() == allowDuplicated)
     )
     let items: string[] = $derived.by(() => {
         let newItems = itemListStr
@@ -103,7 +103,7 @@
     function loadParam() {
         const params = $page.url.searchParams
         if (params.get('date'))
-            pickedDate = DateTime.fromJSDate(new Date(params.get('date'))).toFormat(
+            pickedDate = DateTime.fromJSDate(new Date(params.get('date') || (new Date()).toISOString())).toFormat(
                 'yyyy-MM-dd HH:mm:ss'
             )
         itemListStr = params.get('items') || '1\n2\n3'
@@ -114,7 +114,7 @@
         selectedSortOptionText = params.get('sortOptionText') || 'manual'
         selectedSortOption = params.get('sortOption') || 'alphabet'
         try {
-            selectedItemNumber = parseInt(params.get('itemNumber'), 10) || 1
+            selectedItemNumber = parseInt(params.get('itemNumber') || '1', 10) || 1
         } catch (e) {
             selectedItemNumber = 1
         }
@@ -245,7 +245,7 @@
         } catch (e) {
             resultsInfo = {
                 status: Status.FAIL,
-                text: 'results.errorOccurred;' + e.message
+                text: 'results.errorOccurred;' + (e as Error).message
             }
             pipelineDetails = [] // When error occur, it's weird to show pipeline details
         }

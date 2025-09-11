@@ -1,6 +1,7 @@
 // CWA specific lib
 import { json } from '@sveltejs/kit'
 import type { KVNamespace } from '@cloudflare/workers-types'
+import type { RequestEvent } from '@sveltejs/kit'
 import { checkAndSaveToKv, saveToKv, type SavedData } from './utils'
 
 interface CwaData extends SavedData {
@@ -48,17 +49,18 @@ async function callCwaAndPushKv(
         console.log(JSON.stringify(dataNew))
         return dataNew
     } catch (e) {
-        console.log(e.toString())
+        const errorMessage = e instanceof Error ? e.toString() : String(e)
+        console.log(errorMessage)
         return {
             key: `${name}-`,
             query_time: [new Date().toISOString()],
             status: 'error',
-            data: e.toString()
+            data: errorMessage
         }
     }
 }
 
-async function updateCwaData(env, name: string): Promise<CwaData> {
+async function updateCwaData(env: App.Platform['env'], name: string): Promise<CwaData> {
     if (name == 'weather3')
         return await callCwaAndPushKv(env.CWA_KEY, env.data_draw, 'weather3', 'O-A0003-001', {
             WeatherElement:
@@ -86,10 +88,10 @@ async function updateCwaData(env, name: string): Promise<CwaData> {
 
 export function createCwaEndpoint(name: string) {
     return {
-        GET: async function GET({ platform, url }) {
+        GET: async function GET({ platform, url }: RequestEvent): Promise<Response> {
             const datetime = url.searchParams.get('datetime')
             const key = `${name}-${datetime}`
-            const data: CwaData | null = await platform.env.data_draw.get(key, {
+            const data: CwaData | null = await platform!.env.data_draw.get(key, {
                 type: 'json'
             })
             if (data == null) {
@@ -97,14 +99,14 @@ export function createCwaEndpoint(name: string) {
             }
             return json(data)
         },
-        POST: async function POST({ platform, request }) {
+        POST: async function POST({ platform, request }: RequestEvent): Promise<Response> {
             // In Svelte, cron trigger is much harder to achieve
             // So i use expose this method with key protection
             const { key } = await request.json()
-            if (key !== platform.env.CWA_KEY) {
+            if (key !== platform!.env.CWA_KEY) {
                 return json({ status: 'error' })
             }
-            return json(await updateCwaData(platform.env, name))
+            return json(await updateCwaData(platform!.env, name))
         }
     }
 }

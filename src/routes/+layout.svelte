@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto, replaceState } from '$app/navigation'
-    import { page } from '$app/stores'
+    import { page } from '$app/state'
     import Icon from '@iconify/svelte'
     import { locale, locales, _, isLoading } from 'svelte-i18n'
     import '../app.css'
@@ -11,8 +11,8 @@
 
     function changeLanguage(lang: string) {
         $locale = lang
-        $page.url.searchParams.set('lang', $locale)
-        replaceState($page.url, $page.state)
+        page.url.searchParams.set('lang', $locale)
+        replaceState(page.url, page.state)
         languageToggler = false
     }
 
@@ -51,10 +51,10 @@
 
         <!-- Redirect Button -->
         <div>
-            {#if $page.url.pathname == '/'}
+            {#if page.url.pathname == '/'}
                 <button
                     onclick={() => {
-                        goto(`/info?${$page.url.searchParams}`)
+                        goto(`/info?${page.url.searchParams}`)
                     }}
                     class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
                 >
@@ -62,7 +62,7 @@
                 </button>
             {:else}
                 <button
-                    onclick={() => goto(`/?${$page.url.searchParams}`)}
+                    onclick={() => goto(`/?${page.url.searchParams}`)}
                     class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
                 >
                     <Icon icon="material-symbols:home" style="text-gray-700" />
@@ -90,7 +90,7 @@
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={url} />
-    <meta property="og:image" content={url + '/favicon.jpg'} j />
+    <meta property="og:image" content={url + '/favicon.jpg'} />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
