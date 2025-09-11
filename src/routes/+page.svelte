@@ -103,9 +103,9 @@
     function loadParam() {
         const params = $page.url.searchParams
         if (params.get('date'))
-            pickedDate = DateTime.fromJSDate(new Date(params.get('date') || (new Date()).toISOString())).toFormat(
-                'yyyy-MM-dd HH:mm:ss'
-            )
+            pickedDate = DateTime.fromJSDate(
+                new Date(params.get('date') || new Date().toISOString())
+            ).toFormat('yyyy-MM-dd HH:mm:ss')
         itemListStr = params.get('items') || '1\n2\n3'
         selectedData = params.get('data') || datas.listName()[0]
         selectedGenerator = params.get('generator') || generators.listName()[0]
@@ -348,7 +348,7 @@
 
 <!-- Configuration Page -->
 <div
-    class={`fixed left-0 top-0 z-40 h-screen transform overflow-scroll bg-white shadow-lg transition-transform duration-300 ${showConfiguration ? 'translate-x-0' : '-translate-x-full'}`}
+    class={`fixed top-0 left-0 z-40 h-screen transform overflow-scroll bg-white shadow-lg transition-transform duration-300 ${showConfiguration ? 'translate-x-0' : '-translate-x-full'}`}
 >
     <label class="m-4 block">
         {$_('settings.datetime')}:
@@ -522,12 +522,12 @@
                         <BlockSub type="state" title={$_('results.internalState')}>
                             <div class="relative">
                                 <p
-                                    class="max-h-32 overflow-scroll break-words text-sm text-blue-700"
+                                    class="max-h-32 overflow-scroll text-sm break-words text-blue-700"
                                 >
                                     {@html detail.state.replace(/\n/g, '<br>')}
                                 </p>
                                 <button
-                                    class="absolute right-2 top-2 rounded bg-blue-500 p-1 text-xs text-white hover:bg-blue-600"
+                                    class="absolute top-2 right-2 rounded bg-blue-500 p-1 text-xs text-white hover:bg-blue-600"
                                     onclick={() => copyToClipboard(detail.state)}
                                 >
                                     {$_('button.copyToClipboard')}
@@ -538,11 +538,11 @@
 
                     <BlockSub type="output" title={$_('results.output')}>
                         <div class="relative">
-                            <p class="max-h-32 overflow-scroll break-words text-sm text-blue-700">
+                            <p class="max-h-32 overflow-scroll text-sm break-words text-blue-700">
                                 {@html detail.output.replace(/\n/g, '<br>')}
                             </p>
                             <button
-                                class="absolute right-2 top-2 rounded bg-blue-500 p-1 text-xs text-white hover:bg-blue-600"
+                                class="absolute top-2 right-2 rounded bg-blue-500 p-1 text-xs text-white hover:bg-blue-600"
                                 onclick={() => copyToClipboard(detail.output)}
                             >
                                 {$_('button.copyToClipboard')}

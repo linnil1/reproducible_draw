@@ -3,7 +3,7 @@
     import { Carta, Markdown } from 'carta-md'
     import { anchor } from '@cartamd/plugin-anchor'
     import '@cartamd/plugin-anchor/default.css'
-    import 'carta-md/default.css';
+    import 'carta-md/default.css'
     const carta = new Carta({
         extensions: [anchor()]
     })

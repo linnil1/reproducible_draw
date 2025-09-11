@@ -83,7 +83,7 @@
             >
                 {data[1]}
                 <span
-                    class="absolute bottom-1 right-1 text-gray-500"
+                    class="absolute right-1 bottom-1 text-gray-500"
                     style="
                         font-size: {textSize * 0.8}rem;
                         user-select: none;

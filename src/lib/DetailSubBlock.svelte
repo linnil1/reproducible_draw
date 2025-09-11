@@ -2,11 +2,16 @@
     import Icon from '@iconify/svelte'
     import { Carta, Markdown } from 'carta-md'
     const carta = new Carta()
-    let { title, type, value = '', children } = $props<{
+    let {
+        title,
+        type,
+        value = '',
+        children
+    } = $props<{
         title: string
         type?: 'modules' | 'module' | 'state' | 'output' | string
         value?: string
-        children?: (() => any)
+        children?: () => any
     }>()
 
     let bgColor = $derived.by(() => {
