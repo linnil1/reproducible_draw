@@ -15,6 +15,32 @@
         ready = true
     })
 
+    function saveParamsButKeepLang(): URLSearchParams {
+        // Store original parameters in sessionStorage before going to info page
+        sessionStorage.setItem('originalParams', page.url.searchParams.toString())
+
+        // Create new URLSearchParams with only lang parameter
+        const infoParams = new URLSearchParams()
+        const langParam = page.url.searchParams.get('lang')
+        if (langParam) {
+            infoParams.set('lang', langParam)
+        }
+        return infoParams
+    }
+
+    function loadParamsAndOverwriteLang(): URLSearchParams {
+        // Restore original parameters from sessionStorage
+        const originalParamsString = sessionStorage.getItem('originalParams')
+        const mainParams = new URLSearchParams(originalParamsString || '')
+
+        // Get current lang from info page and overwrite
+        const currentLang = page.url.searchParams.get('lang')
+        if (currentLang) {
+            mainParams.set('lang', currentLang)
+        }
+        return mainParams
+    }
+
     function changeLanguage(lang: string) {
         $locale = lang
         page.url.searchParams.set('lang', $locale)
@@ -57,7 +83,8 @@
         {#if page.url.pathname == '/'}
             <button
                 onclick={() => {
-                    goto(`/info?${page.url.searchParams}`)
+                    const infoParams = saveParamsButKeepLang()
+                    goto(`/info?${infoParams.toString()}`)
                 }}
                 class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
             >
@@ -65,7 +92,10 @@
             </button>
         {:else}
             <button
-                onclick={() => goto(`/?${page.url.searchParams}`)}
+                onclick={() => {
+                    const mainParams = loadParamsAndOverwriteLang()
+                    goto(`/?${mainParams.toString()}`)
+                }}
                 class="rounded bg-blue-500 px-4 py-2 text-white shadow-md transition hover:bg-blue-600"
             >
                 <Icon icon="material-symbols:home" style="text-gray-700" />
