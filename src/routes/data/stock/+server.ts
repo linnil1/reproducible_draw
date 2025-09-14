@@ -1,4 +1,5 @@
 import { fetchAndSaveStock, type StockData } from '$lib/server/data_stock'
+import { validateKeyFromRequest } from '$lib/server/utils'
 import { json } from '@sveltejs/kit'
 import type { RequestEvent } from '@sveltejs/kit'
 
@@ -17,10 +18,6 @@ export async function GET({ platform, url }: RequestEvent): Promise<Response> {
 }
 
 export async function POST({ platform, request }: RequestEvent): Promise<Response> {
-    // protection
-    const { key } = await request.json()
-    if (key !== platform!.env.CWA_KEY) {
-        return json({ status: 'error' })
-    }
+    await validateKeyFromRequest(platform!, request)
     return json(await fetchAndSaveStock(platform!.env.data_draw, name))
 }

@@ -378,7 +378,7 @@
 
         <!-- Date validation warning -->
         {#if dateValidationInfo.status === Status.FAIL}
-            <div class="mt-2 rounded-lg bg-gray-100 p-2 font-semibold text-red-600">
+            <div class="mt-2 rounded-lg bg-gray-100 p-2 font-semibold text-wrap text-red-600">
                 <p>
                     {$_(splitByFirstSemicolon(dateValidationInfo.text)[0])}
                 </p>

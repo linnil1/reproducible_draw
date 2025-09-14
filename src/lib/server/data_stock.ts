@@ -1,5 +1,5 @@
 import type { KVNamespace } from '@cloudflare/workers-types'
-import { checkAndSaveToKv, saveToKv, type SavedData } from './utils'
+import { checkAndSaveToKv, type SavedData } from './utils'
 
 export interface StockData extends SavedData {
     IndexValue_5s: string

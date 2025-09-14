@@ -1,12 +1,15 @@
-import { createCwaEndpoint } from '$lib/server/data_cwa'
+import { getCwaData, updateCwaData } from '$lib/server/data_cwa'
+import { validateKeyFromRequest } from '$lib/server/utils'
+import { json } from '@sveltejs/kit'
 import type { RequestEvent } from '@sveltejs/kit'
 
-const weather3 = createCwaEndpoint('weather3')
+const name = 'weather3'
 
 export async function GET(event: RequestEvent): Promise<Response> {
-    return weather3['GET'](event)
+    return getCwaData(event, name)
 }
 
-export async function POST(event: RequestEvent): Promise<Response> {
-    return weather3['POST'](event)
+export async function POST({ platform, request }: RequestEvent): Promise<Response> {
+    await validateKeyFromRequest(platform!, request)
+    return json(await updateCwaData(platform!.env, name))
 }

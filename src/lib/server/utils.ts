@@ -1,4 +1,6 @@
+import { error } from '@sveltejs/kit'
 import type { KVNamespace } from '@cloudflare/workers-types'
+import type { RequestEvent } from '@sveltejs/kit'
 
 const SavedTTL = 86400 * 32
 
@@ -32,4 +34,18 @@ export async function checkAndSaveToKv<T extends SavedData>(
     }
     await saveToKv(kv, data)
     return data
+}
+
+export async function validateKeyFromRequest(
+    platform: App.Platform,
+    request: RequestEvent['request']
+): Promise<void> {
+    try {
+        const { key } = await request.json()
+        if (key !== platform.env.CWA_KEY) {
+            error(401, 'Unauthorized')
+        }
+    } catch {
+        error(401, 'Bad Request')
+    }
 }

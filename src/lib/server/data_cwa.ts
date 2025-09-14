@@ -60,7 +60,7 @@ async function callCwaAndPushKv(
     }
 }
 
-async function updateCwaData(env: App.Platform['env'], name: string): Promise<CwaData> {
+export async function updateCwaData(env: App.Platform['env'], name: string): Promise<CwaData> {
     if (name == 'weather3')
         return await callCwaAndPushKv(env.CWA_KEY, env.data_draw, 'weather3', 'O-A0003-001', {
             WeatherElement:
@@ -86,27 +86,14 @@ async function updateCwaData(env: App.Platform['env'], name: string): Promise<Cw
     }
 }
 
-export function createCwaEndpoint(name: string) {
-    return {
-        GET: async function GET({ platform, url }: RequestEvent): Promise<Response> {
-            const datetime = url.searchParams.get('datetime')
-            const key = `${name}-${datetime}`
-            const data: CwaData | null = await platform!.env.data_draw.get(key, {
-                type: 'json'
-            })
-            if (data == null) {
-                return json({ status: 'results.fetch.keyNotFound' })
-            }
-            return json(data)
-        },
-        POST: async function POST({ platform, request }: RequestEvent): Promise<Response> {
-            // In Svelte, cron trigger is much harder to achieve
-            // So i use expose this method with key protection
-            const { key } = await request.json()
-            if (key !== platform!.env.CWA_KEY) {
-                return json({ status: 'error' })
-            }
-            return json(await updateCwaData(platform!.env, name))
-        }
+export async function getCwaData({ platform, url }: RequestEvent, name: string): Promise<Response> {
+    const datetime = url.searchParams.get('datetime')
+    const key = `${name}-${datetime}`
+    const data: CwaData | null = await platform!.env.data_draw.get(key, {
+        type: 'json'
+    })
+    if (data == null) {
+        return json({ status: 'results.fetch.keyNotFound' })
     }
+    return json(data)
 }
