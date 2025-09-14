@@ -19,6 +19,9 @@ async function cron(event, env) {
     }
 }
 
+import { f as fetchAndSaveStock } from "../output/server/chunks/data_stock.js";
+import { u as updateCwaData } from "../output/server/chunks/data_cwa.js";
+
 async function fetch10Min(env) {
     await updateCwaData(env, 'weather3')
     await updateCwaData(env, 'rain2')
