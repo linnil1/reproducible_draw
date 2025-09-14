@@ -43,7 +43,8 @@ export const tw = {
             keyNotFoundWithShortSyncTime:
                 '由於資料尚未進入資料庫，無法取得資料。我們的資料庫正在與資料來源同步，資料將很快可用。',
             keyNotFoundWithSpecificSyncTime:
-                '無法取得資料，因為原始資料來源尚未更新。我們的服務將於 14:00 同步資料，請稍後再試。'
+                '無法取得資料，因為原始資料來源尚未更新。我們的服務將於 14:00 同步資料，請稍後再試。',
+            invalidDateFormat: '日期格式錯誤。'
         },
         result: '結果',
         step: '步驟',

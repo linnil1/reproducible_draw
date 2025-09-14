@@ -13,9 +13,9 @@ export class Weather3 extends CwaData {
     }
 
     check(date: Date): DataResult {
-        const result = super.check(date)
-        if (result.status != Status.SUCCESS) return result
-        return this.check10Min(date)
+        const formatResult = this.check10Min(date)
+        if (formatResult.status !== Status.SUCCESS) return formatResult
+        return super.check(date)
     }
 
     private getWeatherKeys(): string[] {

@@ -9,4 +9,7 @@ export abstract class Data extends Module {
     protected isUnavailable(date: Date): boolean {
         return DateTime.fromJSDate(date) < DateTime.now().plus({ days: -30 })
     }
+    protected isFuture(date: Date): boolean {
+        return date > new Date()
+    }
 }

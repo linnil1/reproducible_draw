@@ -45,7 +45,8 @@ export const en = {
             keyNotFoundWithShortSyncTime:
                 'Failed to fetch data because it is not yet in the database. Our database is syncing with the data source, and the data will be available shortly.',
             keyNotFoundWithSpecificSyncTime:
-                'Failed to fetch data because the original source has not been updated yet. Our service will sync the data at 14:00. Please try again later.'
+                'Failed to fetch data because the original source has not been updated yet. Our service will sync the data at 14:00. Please try again later.',
+            invalidDateFormat: 'Invalid date format.'
         },
         result: 'Result',
         step: 'Step',

@@ -74,6 +74,20 @@
         text: ''
     })
 
+    // Real-time date validation for settings
+    let dateValidationInfo: DataResult = $derived.by(() => {
+        try {
+            const date = new Date(selectedDate)
+            const dataModule = datas.get(selectedData)
+            return dataModule.check(date)
+        } catch (e) {
+            return {
+                status: Status.FAIL,
+                text: 'results.fetch.invalidDateFormat'
+            }
+        }
+    })
+
     function initResult() {
         pipelineDetails = []
         resultItems = []
@@ -361,6 +375,20 @@
             bind:value={pickedDate}
         />
         {$_('settings.timezone')}: <span>{timeZone}</span>
+
+        <!-- Date validation warning -->
+        {#if dateValidationInfo.status === Status.FAIL}
+            <div class="mt-2 rounded-lg bg-gray-100 p-2 font-semibold text-red-600">
+                <p>
+                    {$_(splitByFirstSemicolon(dateValidationInfo.text)[0])}
+                </p>
+                {#if splitByFirstSemicolon(dateValidationInfo.text)[1]}
+                    <p>
+                        {$_(splitByFirstSemicolon(dateValidationInfo.text)[1])}
+                    </p>
+                {/if}
+            </div>
+        {/if}
     </label>
     <ModulesSelector bind:value={selectedData} modules={datas} />
 

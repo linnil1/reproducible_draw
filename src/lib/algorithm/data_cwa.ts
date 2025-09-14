@@ -41,18 +41,22 @@ export abstract class CwaData extends Data {
     }
 
     check(date: Date): DataResult {
-        const now = new Date()
-        if (date > now)
-            return {
-                status: Status.PENDING,
-                text: 'results.fetch.futureTime'
-            }
+        // Check FAIL conditions first
         if (this.isUnavailable(date)) {
             return {
                 status: Status.FAIL,
                 text: 'results.fetch.unavailable'
             }
         }
+
+        // Check PENDING conditions at the end
+        if (this.isFuture(date)) {
+            return {
+                status: Status.PENDING,
+                text: 'results.fetch.futureTime'
+            }
+        }
+
         return {
             status: Status.SUCCESS,
             text: ''

@@ -43,7 +43,7 @@ export class Stock extends Data {
             }
         }
 
-        if (taiwanDate > now) {
+        if (this.isFuture(date)) {
             return {
                 status: Status.PENDING,
                 text: 'results.fetch.futureTime'
