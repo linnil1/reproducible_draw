@@ -8,7 +8,7 @@
         "directory": ".svelte-kit/cloudflare",
         "binding": "ASSETS"
     },
-    "compatibility_date": "2024-10-22",
+    "compatibility_date": "2025-09-14",
     "workers_dev": false,
     "route": {
         "pattern": "draw.linnil1.me",
