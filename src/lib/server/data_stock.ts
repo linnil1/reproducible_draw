@@ -19,8 +19,9 @@ export function formatDate(date: Date): string {
 }
 
 async function fetchTradeVolume(time: string): Promise<string> {
-    const url = 'https://www.twse.com.tw/pcversion/zh/exchangeReport/MI_5MINS'
-    const body = `response=json&date=${time}`
+    const timestamp = Date.now() // To prevent caching
+    const url = 'https://www.twse.com.tw/rwd/zh/afterTrading/MI_5MINS'
+    const body = `response=json&date=${time}&_=${timestamp}`
 
     const response = await fetch(url, {
         method: 'POST',
@@ -35,7 +36,8 @@ async function fetchTradeVolume(time: string): Promise<string> {
 
 async function fetchIndexValue(time: string): Promise<string> {
     const timestamp = Date.now() // To prevent caching
-    const url = `https://www.twse.com.tw/pcversion/zh/exchangeReport/MI_5MINS_INDEX?response=json&date=${time}&_=${timestamp}`
+    const url = `https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_INDEX?response=json&date=${time}&_=${timestamp}`
+    console.log(url)
 
     const response = await fetch(url, {
         method: 'GET'
@@ -48,8 +50,12 @@ async function fetchIndexValue(time: string): Promise<string> {
     return response.text()
 }
 
-export async function fetchAndSaveStock(kv: KVNamespace, name: string): Promise<StockData | null> {
-    const now = new Date()
+export async function fetchAndSaveStock(
+    kv: KVNamespace,
+    name: string,
+    fetchDate?: Date
+): Promise<StockData | null> {
+    const now = fetchDate || new Date()
     const time = formatDate(now)
     const key = `${name}-${time}`
     try {
