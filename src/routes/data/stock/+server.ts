@@ -1,4 +1,4 @@
-import { fetchAndSaveStock, type StockData } from '$lib/server/data_stock'
+import { fetchAndSaveStock, parseDate, type StockData } from '$lib/server/data_stock'
 import { validateKeyFromRequest } from '$lib/server/utils'
 import { json } from '@sveltejs/kit'
 import type { RequestEvent } from '@sveltejs/kit'
@@ -17,7 +17,14 @@ export async function GET({ platform, url }: RequestEvent): Promise<Response> {
     return json(data)
 }
 
-export async function POST({ platform, request }: RequestEvent): Promise<Response> {
+export async function POST({ platform, request, url }: RequestEvent): Promise<Response> {
     await validateKeyFromRequest(platform!, request)
-    return json(await fetchAndSaveStock(platform!.env.data_draw, name))
+
+    const datetimeStr = url.searchParams.get('datetime')
+    const fetchDate = datetimeStr ? parseDate(datetimeStr) : null
+    if (fetchDate == null) {
+        return json(await fetchAndSaveStock(platform!.env.data_draw, name))
+    } else {
+        return json(await fetchAndSaveStock(platform!.env.data_draw, name, fetchDate))
+    }
 }

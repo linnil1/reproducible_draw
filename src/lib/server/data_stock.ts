@@ -18,25 +18,62 @@ export function formatDate(date: Date): string {
     return `${year}${month}${day}`
 }
 
+export function parseDate(dateStr: string): Date | null {
+    const regex = /^(\d{4})(\d{2})(\d{2})$/
+    const match = dateStr.match(regex)
+    if (match) {
+        const year = parseInt(match[1], 10)
+        const month = parseInt(match[2], 10) - 1 // Months are zero-based
+        const day = parseInt(match[3], 10)
+        return new Date(year, month, day)
+    }
+    return null
+}
+
+function checkBodyIfFail(text: string): string {
+    const parsed = JSON.parse(text)
+    if (parsed && typeof parsed.stat === 'string' && parsed.stat.startsWith('很抱歉')) {
+        return parsed.stat
+    }
+    return ''
+}
+
 async function fetchTradeVolume(time: string): Promise<string> {
     const timestamp = Date.now() // To prevent caching
-    const url = 'https://www.twse.com.tw/rwd/zh/afterTrading/MI_5MINS'
-    const body = `response=json&date=${time}&_=${timestamp}`
+    const baseUrl = 'https://www.twse.com.tw/rwd/zh/afterTrading/MI_5MINS'
+    const paramsMap: Record<string, string> = {
+        response: 'json',
+        date: time,
+        _: String(timestamp)
+    }
+    const url = `${baseUrl}?${new URLSearchParams(paramsMap).toString()}`
+    console.log(url)
 
     const response = await fetch(url, {
-        method: 'POST',
-        body: body
+        method: 'GET'
     })
 
     if (!response.ok) {
         throw new Error(`Error fetching MI_5MINS: ${response.status} ${response.statusText}`)
     }
-    return response.text()
+
+    const text = await response.text()
+    const failMsg = checkBodyIfFail(text)
+    if (failMsg) {
+        throw new Error(`url: ${url}, stat: ${failMsg}`)
+    }
+    return text
 }
 
 async function fetchIndexValue(time: string): Promise<string> {
     const timestamp = Date.now() // To prevent caching
-    const url = `https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_INDEX?response=json&date=${time}&_=${timestamp}`
+    const baseUrl = 'https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_INDEX'
+    const paramsMap: Record<string, string> = {
+        response: 'json',
+        date: time,
+        _: String(timestamp)
+    }
+    const url = `${baseUrl}?${new URLSearchParams(paramsMap).toString()}`
     console.log(url)
 
     const response = await fetch(url, {
@@ -47,7 +84,12 @@ async function fetchIndexValue(time: string): Promise<string> {
         throw new Error(`Error fetching MI_5MINS_INDEX: ${response.status} ${response.statusText}`)
     }
 
-    return response.text()
+    const text = await response.text()
+    const failMsg = checkBodyIfFail(text)
+    if (failMsg) {
+        throw new Error(`url: ${url}, stat: ${failMsg}`)
+    }
+    return text
 }
 
 export async function fetchAndSaveStock(
