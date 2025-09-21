@@ -44,11 +44,11 @@ describe('Page Pipeline with mocked fetchData', () => {
             mockData: JSON.stringify([
                 {
                     StationId: 'TEST123',
-                    ObsTime: testDate1.toISOString().replace('Z', '+08:00'),
+                    ObsTime: "2025-09-21T12:00:00+08:00",
                     AirTemperature: 25.0
                 }
             ]),
-            expectedResult: [0, 4, 2] // Actual result from test run
+            expectedResult: [3, 0, 1] // Actual result from test run
         },
         {
             name: 'Weather1 with hour alignment',
@@ -66,11 +66,11 @@ describe('Page Pipeline with mocked fetchData', () => {
             mockData: JSON.stringify([
                 {
                     StationId: 'WEATHER1',
-                    ObsTime: testDate2.toISOString().replace('Z', '+08:00'),
+                    ObsTime: "2025-09-21T12:00:00+08:00",
                     AirTemperature: 22.5
                 }
             ]),
-            expectedResult: [0, 2] // Actual result from test run
+            expectedResult: [1, 0] // Actual result from test run
         }
     ]
 

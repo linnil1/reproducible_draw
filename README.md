@@ -42,6 +42,14 @@ Note: without a CWA key only the public stock data will update.
 npm run dev
 ```
 
+For testing:
+
+add `VITE_TEST_CWA_KEY="xxx"` to `.env`, then run
+```bash
+npm run test
+```
+
+
 ## Building
 
 ```bash

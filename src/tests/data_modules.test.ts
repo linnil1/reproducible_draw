@@ -83,9 +83,6 @@ function validateStringField(value: any, fieldName: string): void {
     expect(value.length).toBeGreaterThan(0)
 }
 
-// Helper function for CWA data modules to fetch real data and test with mocked fetchData
-const CWA_KEY = ""
-
 // Helper function to mock fetchData endpoint call
 async function mockFetchDataCall(savedData: any, dataModule: any, testDate: Date): Promise<string> {
     // Save original fetch
@@ -126,6 +123,7 @@ async function testCwaDataModule(
     dateFields: string[],
     floatFields: string[]
 ) {
+    const CWA_KEY = import.meta.env.VITE_TEST_CWA_KEY as string
     // Skip test if CWA_KEY is empty
     if (!CWA_KEY) {
         console.log(`Skipping ${dataModuleName} test: CWA_KEY is empty`)
