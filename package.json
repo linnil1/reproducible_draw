@@ -16,14 +16,14 @@
     },
     "devDependencies": {
         "@cartamd/plugin-anchor": "^2.2.0",
-        "@iconify/svelte": "^5.0.1",
+        "@iconify/svelte": "^5.0.2",
         "@stdlib/random-base-mt19937": "^0.2.1",
         "@sveltejs/adapter-auto": "^6.1.0",
         "@sveltejs/adapter-cloudflare": "^7.2.3",
-        "@sveltejs/kit": "^2.37.1",
-        "@sveltejs/vite-plugin-svelte": "^6.1.4",
+        "@sveltejs/kit": "^2.42.2",
+        "@sveltejs/vite-plugin-svelte": "^6.2.0",
         "@tailwindcss/postcss": "^4.1.13",
-        "@tailwindcss/typography": "^0.5.16",
+        "@tailwindcss/typography": "^0.5.18",
         "@tailwindcss/vite": "^4.1.13",
         "@types/luxon": "^3.7.1",
         "carta-md": "^4.11.1",
@@ -33,14 +33,14 @@
         "prettier": "^3.6.2",
         "prettier-plugin-svelte": "^3.4.0",
         "prettier-plugin-tailwindcss": "^0.6.14",
-        "svelte": "^5.38.7",
+        "svelte": "^5.39.3",
         "svelte-check": "^4.3.1",
         "svelte-i18n": "^4.0.1",
-        "svelty-picker": "^5.2.11",
+        "svelty-picker": "^6.1.6",
         "tailwindcss": "^4.1.13",
         "typescript": "^5.9.2",
-        "vite": "^7.1.5",
+        "vite": "^7.1.6",
         "vitest": "^3.2.4",
-        "wrangler": "^4.34.0"
+        "wrangler": "^4.38.0"
     }
 }
